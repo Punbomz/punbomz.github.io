@@ -226,8 +226,9 @@ export default function AboutMe() {
           </h2>
           <div className="flex flex-col items-center gap-6">
             {/* High School */}
-            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 shadow-2xl w-full max-w-md hover:bg-white/15 transition-all duration-300 hover:scale-105">
+            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 shadow-2xl w-full max-w-lg hover:bg-white/15 transition-all duration-300 hover:scale-105">
               <h3 className="text-white text-2xl font-bold mb-2">High School</h3>
+              <h2 className="text-white text-xl">Suratpittaya School</h2>
               <p className="text-white/80 text-lg">Year: 2018 - 2021</p>
             </div>
 
@@ -240,8 +241,9 @@ export default function AboutMe() {
             </div>
 
             {/* University */}
-            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 shadow-2xl w-full max-w-md hover:bg-white/15 transition-all duration-300 hover:scale-105">
+            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 shadow-2xl w-full max-w-lg hover:bg-white/15 transition-all duration-300 hover:scale-105">
               <h3 className="text-white text-2xl font-bold mb-2">University</h3>
+              <h2 className="text-white text-xl">King Mongkut’s University of Technology Thonburi</h2>
               <p className="text-white/80 text-lg">Year: 2021 - Now</p>
             </div>
           </div>
@@ -264,8 +266,8 @@ export default function AboutMe() {
                 <span className="text-3xl">📧</span>
                 <div>
                   <p className="text-white font-semibold text-lg">Email</p>
-                  <a href="mailto:your.email@example.com" className="text-white/80 hover:text-white transition-colors">
-                    your.email@example.com
+                  <a href="mailto:bombbomb925@gmail.com" className="text-white/80 hover:text-white transition-colors">
+                    bombbomb925@gmail.com
                   </a>
                 </div>
               </div>
@@ -274,8 +276,8 @@ export default function AboutMe() {
                 <span className="text-3xl">💼</span>
                 <div>
                   <p className="text-white font-semibold text-lg">LinkedIn</p>
-                  <a href="https://linkedin.com/in/yourprofile" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors">
-                    linkedin.com/in/yourprofile
+                  <a href="https://www.linkedin.com/in/puntakant-roojang-4457192ab/" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors">
+                    linkedin.com/in/puntakant-roojang-4457192ab/
                   </a>
                 </div>
               </div>
@@ -284,8 +286,8 @@ export default function AboutMe() {
                 <span className="text-3xl">🐱</span>
                 <div>
                   <p className="text-white font-semibold text-lg">GitHub</p>
-                  <a href="https://github.com/yourusername" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors">
-                    github.com/yourusername
+                  <a href="https://github.com/Punbomz" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors">
+                    github.com/Punbomz
                   </a>
                 </div>
               </div>

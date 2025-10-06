@@ -24,21 +24,7 @@ export default function Portfolio() {
       icon: '🛒',
       tags: ['Next.js', 'React', 'Tailwind', 'Stripe'],
       color: 'from-blue-500 to-cyan-500'
-    },
-    {
-      name: 'Task Management App',
-      details: 'A collaborative task management application with real-time updates, drag-and-drop functionality, and team collaboration features. Built with React and Firebase.',
-      icon: '✅',
-      tags: ['React', 'Firebase', 'Real-time'],
-      color: 'from-purple-500 to-pink-500'
-    },
-    {
-      name: 'Weather Dashboard',
-      details: 'An interactive weather dashboard displaying real-time weather data, forecasts, and beautiful visualizations. Integrated with multiple weather APIs for accurate data.',
-      icon: '🌤️',
-      tags: ['JavaScript', 'API', 'Charts'],
-      color: 'from-orange-500 to-yellow-500'
-    },
+    }
   ];
 
   const experiences = [
@@ -48,21 +34,7 @@ export default function Portfolio() {
       period: '2023 - 2024',
       details: 'Developed responsive web applications using React and TypeScript. Collaborated with designers to implement pixel-perfect UI components. Improved website performance by 40%.',
       icon: '💻',
-    },
-    {
-      title: 'Web Development Volunteer',
-      company: 'Local Community Center',
-      period: '2022 - 2023',
-      details: 'Created and maintained the community center\'s website. Implemented booking system for events and classes. Trained staff on content management.',
-      icon: '🤝',
-    },
-    {
-      title: 'Coding Workshop Facilitator',
-      company: 'University Tech Club',
-      period: '2021 - Present',
-      details: 'Led workshops teaching web development fundamentals to beginners. Mentored students on coding projects. Organized hackathons and coding competitions.',
-      icon: '👨‍🏫',
-    },
+    }
   ];
 
   return (
