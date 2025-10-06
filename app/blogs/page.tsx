@@ -3,6 +3,14 @@
 import { useState, useEffect } from 'react';
 import { Search, Calendar, Tag } from 'lucide-react';
 
+type BlogPost = {
+  id: number;
+  title: string;
+  description: string;
+  date: string;
+  tags: string[];
+};
+
 export default function BlogPage() {
   const [scrollY, setScrollY] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
@@ -20,7 +28,7 @@ export default function BlogPage() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const blogPosts = [
+  const blogPosts: BlogPost[] = [
     // {
     //   id: 1,
     //   title: 'Getting Started with React',
