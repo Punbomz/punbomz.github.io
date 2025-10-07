@@ -3,17 +3,7 @@ require('dotenv').config({ path: '.env.local' });
 
 const fs = require('fs');
 const path = require('path');
-
-// Try to import Notion client
-let Client;
-try {
-  // Try new import style first
-  const notion = require('@notionhq/client');
-  Client = notion.Client;
-} catch (e) {
-  console.error('Failed to import @notionhq/client:', e.message);
-  process.exit(1);
-}
+const https = require('https');
 
 // Verify environment variables
 if (!process.env.NOTION_TOKEN) {
@@ -39,54 +29,61 @@ if (!process.env.NOTION_ACHIEVEMENTS_DB) {
 console.log('Environment variables loaded:');
 console.log('- NOTION_TOKEN:', process.env.NOTION_TOKEN ? '✓ Set' : '✗ Missing');
 
-// Initialize Notion client
-const notion = new Client({
-  auth: process.env.NOTION_TOKEN,
-});
-
-console.log('\n🔍 Checking Notion client...');
-console.log('Client type:', typeof notion);
-console.log('Available top-level methods:', Object.keys(notion));
-
-async function getDatabase(databaseId) {
-  try {
-    console.log(`\n📋 Querying database: ${databaseId}`);
+// Function to make HTTP request to Notion API
+function makeNotionRequest(databaseId) {
+  return new Promise((resolve, reject) => {
+    const postData = JSON.stringify({});
     
-    // Method 1: Try using pages.query (some SDK versions)
-    if (notion.databases && typeof notion.databases.query === 'function') {
-      console.log('Using notion.databases.query');
-      const response = await notion.databases.query({
-        database_id: databaseId,
-      });
-      console.log(`✓ Received ${response.results.length} items`);
-      return response.results;
-    }
-    
-    // Method 2: Try manual API call
-    console.log('Using manual fetch...');
-    const url = `https://api.notion.com/v1/databases/${databaseId}/query`;
-    const response = await fetch(url, {
+    const options = {
+      hostname: 'api.notion.com',
+      path: `/v1/databases/${databaseId}/query`,
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${process.env.NOTION_TOKEN}`,
         'Notion-Version': '2022-06-28',
         'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({}),
+        'Content-Length': Buffer.byteLength(postData)
+      }
+    };
+
+    const req = https.request(options, (res) => {
+      let data = '';
+
+      res.on('data', (chunk) => {
+        data += chunk;
+      });
+
+      res.on('end', () => {
+        if (res.statusCode === 200) {
+          try {
+            const parsed = JSON.parse(data);
+            resolve(parsed.results);
+          } catch (e) {
+            reject(new Error(`Failed to parse response: ${e.message}`));
+          }
+        } else {
+          reject(new Error(`API request failed with status ${res.statusCode}: ${data}`));
+        }
+      });
     });
-    
-    if (!response.ok) {
-      const error = await response.text();
-      throw new Error(`API request failed: ${response.status} - ${error}`);
-    }
-    
-    const data = await response.json();
-    console.log(`✓ Received ${data.results.length} items`);
-    return data.results;
-    
+
+    req.on('error', (error) => {
+      reject(error);
+    });
+
+    req.write(postData);
+    req.end();
+  });
+}
+
+async function getDatabase(databaseId) {
+  try {
+    console.log(`\n📋 Querying database: ${databaseId}`);
+    const results = await makeNotionRequest(databaseId);
+    console.log(`✓ Received ${results.length} items`);
+    return results;
   } catch (error) {
     console.error('❌ Error fetching database:', error.message);
-    if (error.code) console.error('Error code:', error.code);
     return [];
   }
 }
@@ -157,7 +154,7 @@ async function fetchAndSaveData() {
     const experiences = parseExperiences(experiencesData);
 
     // Fetch achievements
-    console.log('\n💼 Fetching achievements...');
+    console.log('\n🏆 Fetching achievements...');
     const achievementsData = await getDatabase(process.env.NOTION_ACHIEVEMENTS_DB);
     const achievements = parseAchievements(achievementsData);
     
