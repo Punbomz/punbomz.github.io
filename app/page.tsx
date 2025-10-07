@@ -179,7 +179,7 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-pink-500 rounded-full blur-xl opacity-30 group-hover:opacity-50 transition-opacity"></div>
           <div className="relative bg-white/5 backdrop-blur-xl px-8 py-4 rounded-full border border-white/20">
             <p className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-cyan-400 to-pink-400 bg-clip-text text-transparent">
-              ( BOMB )
+              " BOMB "
             </p>
           </div>
         </div>
