@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Punbomz",
+  title: "Punbomz Portfolio",
 };
 
 export default function RootLayout({
