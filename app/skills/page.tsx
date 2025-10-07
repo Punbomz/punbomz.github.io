@@ -248,16 +248,6 @@ export default function Skills() {
 
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Animated Grid Pattern */}
-        <div 
-          className="absolute inset-0 opacity-10"
-          style={{
-            backgroundImage: 'linear-gradient(rgba(139, 92, 246, 0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(139, 92, 246, 0.3) 1px, transparent 1px)',
-            backgroundSize: '50px 50px',
-            transform: `translateY(${scrollY * 0.3}px)`
-          }}
-        ></div>
-
         {/* Floating particles */}
         <div className="absolute inset-0">
           {[...Array(30)].map((_, i) => (
@@ -273,6 +263,16 @@ export default function Skills() {
             ></div>
           ))}
         </div>
+
+        {/* Animated Grid */}
+        <div 
+          className="absolute inset-0 opacity-10"
+          style={{
+            backgroundImage: 'linear-gradient(rgba(139, 92, 246, 0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(139, 92, 246, 0.3) 1px, transparent 1px)',
+            backgroundSize: '50px 50px',
+            transform: `translateY(${scrollY * 0.3}px)`
+          }}
+        ></div>
       </div>
 
       {/* Main Content */}
