@@ -35,6 +35,7 @@ jobs:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           NOTION_PROJECTS_DB: ${{ secrets.NOTION_PROJECTS_DB }}
           NOTION_EXPERIENCES_DB: ${{ secrets.NOTION_EXPERIENCES_DB }}
+          NOTION_ACHIEVEMENTS_DB: ${{ secrets.NOTION_ACHIEVEMENTS_DB }}
         run: npm run build
 
       - name: Upload static site artifact
