@@ -246,29 +246,33 @@ export default function Skills() {
         }
       `}</style>
 
-      {/* Enhanced Animated Background */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute w-96 h-96 bg-purple-500 rounded-full blur-3xl opacity-10 -top-48 -left-48 animate-float" style={{ animationDuration: '8s' }}></div>
-        <div className="absolute w-96 h-96 bg-pink-500 rounded-full blur-3xl opacity-10 top-1/2 -right-48 animate-float" style={{ animationDuration: '10s', animationDelay: '2s' }}></div>
-        <div className="absolute w-96 h-96 bg-cyan-500 rounded-full blur-3xl opacity-10 -bottom-48 left-1/4 animate-float" style={{ animationDuration: '9s', animationDelay: '1s' }}></div>
-        <div className="absolute w-64 h-64 bg-yellow-500 rounded-full blur-3xl opacity-5 top-1/4 left-1/3 animate-float" style={{ animationDuration: '11s', animationDelay: '3s' }}></div>
-      </div>
-      
-      {/* Floating particles */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        {[...Array(15)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-2 h-2 bg-white rounded-full animate-float-particle"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDuration: `${15 + Math.random() * 10}s`,
-              animationDelay: `${Math.random() * 5}s`,
-              opacity: 0.1 + Math.random() * 0.2,
-            }}
-          ></div>
-        ))}
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {/* Animated Grid Pattern */}
+        <div 
+          className="absolute inset-0 opacity-10"
+          style={{
+            backgroundImage: 'linear-gradient(rgba(139, 92, 246, 0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(139, 92, 246, 0.3) 1px, transparent 1px)',
+            backgroundSize: '50px 50px',
+            transform: `translateY(${scrollY * 0.3}px)`
+          }}
+        ></div>
+
+        {/* Floating particles */}
+        <div className="absolute inset-0">
+          {[...Array(30)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute w-1 h-1 bg-white rounded-full opacity-20"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animation: `float ${3 + Math.random() * 4}s ease-in-out infinite`,
+                animationDelay: `${Math.random() * 2}s`
+              }}
+            ></div>
+          ))}
+        </div>
       </div>
 
       {/* Main Content */}
