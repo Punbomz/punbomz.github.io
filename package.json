@@ -5,7 +5,6 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "fetch-notion": "node scripts/fetch-notion-data.js",
-    "prebuild": "npm run fetch-notion",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
