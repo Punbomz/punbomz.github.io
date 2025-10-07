@@ -1,4 +1,4 @@
-import PortfolioClient from './PortfolioClient';
+import PortfolioClient from '../components/PortfolioClient';
 
 interface Project {
   name: string;
@@ -27,11 +27,11 @@ interface Achievement {
   link: string;
 }
 
-// Fallback data if Notion fetch fails
+// Fallback data
 const defaultProjects: Project[] = [
   {
     name: 'E-Commerce Platform',
-    details: 'A full-stack e-commerce platform built with Next.js, featuring product management, shopping cart, and secure payment integration. Implemented responsive design and optimized performance.',
+    details: 'A full-stack e-commerce platform built with Next.js, featuring product management, shopping cart, and secure payment integration.',
     icon: '🛒',
     tags: ['Next.js', 'React', 'Tailwind', 'Stripe'],
     color: 'from-blue-500 to-cyan-500',
@@ -44,7 +44,7 @@ const defaultExperiences: Experience[] = [
     title: 'Frontend Developer Intern',
     company: 'Tech Startup Co.',
     period: '2023 - 2024',
-    details: 'Developed responsive web applications using React and TypeScript. Collaborated with designers to implement pixel-perfect UI components. Improved website performance by 40%.',
+    details: 'Developed responsive web applications using React and TypeScript.',
     icon: '💻',
     color: 'from-cyan-400 to-blue-500',
     highlights: ['Built 15+ reusable components', 'Reduced bundle size by 35%', 'Led UI/UX redesign']
@@ -55,7 +55,7 @@ const defaultAchievements: Achievement[] = [
   {
     name: 'Best Innovation Award',
     icon: '🏆',
-    details: 'Recognized for developing an innovative IoT solution that reduced energy consumption by 30%',
+    details: 'Recognized for developing an innovative IoT solution',
     year: '2024',
     link: ''
   }
@@ -64,6 +64,7 @@ const defaultAchievements: Achievement[] = [
 // Fetch from Notion API
 async function fetchNotionDatabase(databaseId: string) {
   if (!process.env.NOTION_TOKEN) {
+    console.log('No NOTION_TOKEN found');
     return [];
   }
 
@@ -76,7 +77,7 @@ async function fetchNotionDatabase(databaseId: string) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({}),
-      next: { revalidate: 3600 } // Cache for 1 hour
+      cache: 'no-store' // Always fetch fresh data
     });
 
     if (!response.ok) {
@@ -134,7 +135,6 @@ async function loadData() {
   let experiences = defaultExperiences;
   let achievements = defaultAchievements;
 
-  // Only fetch from Notion if environment variables are set
   if (process.env.NOTION_TOKEN && 
       process.env.NOTION_PROJECTS_DB && 
       process.env.NOTION_EXPERIENCES_DB && 
@@ -151,29 +151,32 @@ async function loadData() {
 
       if (projectsData.length > 0) {
         projects = parseProjects(projectsData);
-        console.log(`Loaded ${projects.length} projects from Notion`);
+        console.log(`✓ Loaded ${projects.length} projects from Notion`);
       }
 
       if (experiencesData.length > 0) {
         experiences = parseExperiences(experiencesData);
-        console.log(`Loaded ${experiences.length} experiences from Notion`);
+        console.log(`✓ Loaded ${experiences.length} experiences from Notion`);
       }
 
       if (achievementsData.length > 0) {
         achievements = parseAchievements(achievementsData);
-        console.log(`Loaded ${achievements.length} achievements from Notion`);
+        console.log(`✓ Loaded ${achievements.length} achievements from Notion`);
       }
     } catch (error) {
-      console.error('Error loading Notion data, using defaults:', error);
+      console.error('Error loading Notion data:', error);
     }
   } else {
-    console.log('Notion environment variables not set, using default data');
+    console.log('Using default data - Notion env vars not set');
   }
 
   return { projects, experiences, achievements };
 }
 
-// Server Component - fetches data at runtime
+// Force dynamic rendering - fetch on every request
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function Portfolio() {
   const { projects, experiences, achievements } = await loadData();
 
