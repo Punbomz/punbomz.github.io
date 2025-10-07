@@ -1,17 +1,6 @@
-import { Client } from '@notionhq/client'
-
-// Only initialize if we have the token (server-side only)
-let notion: Client | null = null;
-
-if (process.env.NOTION_TOKEN) {
-  notion = new Client({
-    auth: process.env.NOTION_TOKEN,
-  });
-}
-
-// Fetch database
+// Fetch database using native fetch
 export async function getDatabase(databaseId: string) {
-  if (!notion) {
+  if (!process.env.NOTION_TOKEN) {
     console.error('Notion client not initialized - missing NOTION_TOKEN');
     return [];
   }
@@ -22,10 +11,23 @@ export async function getDatabase(databaseId: string) {
   }
 
   try {
-    const response = await notion.databases.query({
-      database_id: databaseId,
+    const response = await fetch(`https://api.notion.com/v1/databases/${databaseId}/query`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.NOTION_TOKEN}`,
+        'Notion-Version': '2022-06-28',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({}),
     });
-    return response.results;
+
+    if (!response.ok) {
+      const error = await response.text();
+      throw new Error(`API request failed: ${response.status} - ${error}`);
+    }
+
+    const data = await response.json();
+    return data.results;
   } catch (error) {
     console.error('Error fetching database:', error);
     return [];
