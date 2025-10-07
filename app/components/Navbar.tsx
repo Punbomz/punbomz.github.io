@@ -56,8 +56,8 @@ export default function Navbar() {
               href={item.href}
               className={`flex flex-col items-center gap-1 transition-all duration-300 ${
                 isActive 
-                  ? 'text-black scale-110' 
-                  : 'text-white-600 hover:text-red-600'
+                  ? 'text-pink-600 scale-110' 
+                  : 'text-white-600 hover:text-pink-400'
               }`}
             >
               <svg 
