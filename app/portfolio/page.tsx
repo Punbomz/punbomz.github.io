@@ -1,20 +1,35 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 export default function Portfolio() {
   const [scrollY, setScrollY] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const hasAnimated = useRef(false);
 
   useEffect(() => {
     setIsVisible(true);
+    hasAnimated.current = true;
     
     const handleScroll = () => {
       setScrollY(window.scrollY);
     };
 
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({
+        x: (e.clientX / window.innerWidth - 0.5) * 20,
+        y: (e.clientY / window.innerHeight - 0.5) * 20,
+      });
+    };
+
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('mousemove', handleMouseMove);
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
   }, []);
 
   const projects = [
@@ -23,7 +38,24 @@ export default function Portfolio() {
       details: 'A full-stack e-commerce platform built with Next.js, featuring product management, shopping cart, and secure payment integration. Implemented responsive design and optimized performance.',
       icon: '🛒',
       tags: ['Next.js', 'React', 'Tailwind', 'Stripe'],
-      color: 'from-blue-500 to-cyan-500'
+      color: 'from-blue-500 to-cyan-500',
+      achievements: ['40% faster load times', 'Secure payment processing', 'Mobile-first design']
+    },
+    {
+      name: 'AI Chat Application',
+      details: 'Real-time chat application with AI-powered responses using OpenAI API. Features include message threading, user authentication, and intelligent context awareness.',
+      icon: '🤖',
+      tags: ['React', 'Node.js', 'OpenAI', 'WebSocket'],
+      color: 'from-purple-500 to-pink-500',
+      achievements: ['Real-time messaging', 'AI integration', 'Smart context handling']
+    },
+    {
+      name: 'IoT Smart Home System',
+      details: 'Comprehensive IoT solution for home automation using Raspberry Pi and Arduino. Controls lighting, temperature, and security systems through a web dashboard.',
+      icon: '🏠',
+      tags: ['Arduino', 'Raspberry Pi', 'Python', 'MQTT'],
+      color: 'from-green-500 to-emerald-500',
+      achievements: ['30% energy savings', 'Remote monitoring', 'Automated scheduling']
     }
   ];
 
@@ -34,30 +66,61 @@ export default function Portfolio() {
       period: '2023 - 2024',
       details: 'Developed responsive web applications using React and TypeScript. Collaborated with designers to implement pixel-perfect UI components. Improved website performance by 40%.',
       icon: '💻',
+      color: 'from-cyan-400 to-blue-500',
+      highlights: ['Built 15+ reusable components', 'Reduced bundle size by 35%', 'Led UI/UX redesign']
+    },
+    {
+      title: 'Embedded Systems Engineer',
+      company: 'Innovation Labs',
+      period: '2022 - 2023',
+      details: 'Designed and programmed embedded systems for IoT devices. Worked with Arduino and Raspberry Pi to create smart home solutions and industrial automation systems.',
+      icon: '⚡',
+      color: 'from-yellow-400 to-orange-500',
+      highlights: ['Deployed 50+ IoT devices', 'Optimized power consumption', 'Developed custom PCBs']
+    },
+    {
+      title: 'Full Stack Developer',
+      company: 'Digital Solutions Inc.',
+      period: '2021 - 2022',
+      details: 'Built scalable web applications using modern frameworks. Managed databases, APIs, and cloud infrastructure. Collaborated with cross-functional teams to deliver high-quality products.',
+      icon: '🚀',
+      color: 'from-pink-400 to-rose-500',
+      highlights: ['Launched 8 major features', 'Improved API response time', 'Mentored junior developers']
     }
   ];
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-red-600 via-red-700 to-rose-900 pb-24">
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 pb-24">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div 
-          className="absolute w-96 h-96 bg-red-500 rounded-full blur-3xl opacity-20 -top-48 -left-48 animate-pulse"
-          style={{ animationDuration: '4s' }}
+          className="absolute w-96 h-96 bg-purple-500 rounded-full blur-3xl opacity-20 -top-48 -left-48 animate-pulse"
+          style={{ 
+            animationDuration: '4s',
+            transform: `translate(${mousePosition.x}px, ${mousePosition.y}px)`
+          }}
         ></div>
         <div 
-          className="absolute w-96 h-96 bg-rose-400 rounded-full blur-3xl opacity-20 top-1/3 -right-48 animate-pulse"
-          style={{ animationDuration: '6s', animationDelay: '1s' }}
+          className="absolute w-96 h-96 bg-pink-500 rounded-full blur-3xl opacity-20 top-1/2 -right-48 animate-pulse"
+          style={{ 
+            animationDuration: '6s', 
+            animationDelay: '1s',
+            transform: `translate(${-mousePosition.x}px, ${mousePosition.y}px)`
+          }}
         ></div>
         <div 
-          className="absolute w-96 h-96 bg-red-400 rounded-full blur-3xl opacity-20 -bottom-48 left-1/3 animate-pulse"
-          style={{ animationDuration: '5s', animationDelay: '2s' }}
+          className="absolute w-96 h-96 bg-cyan-500 rounded-full blur-3xl opacity-20 -bottom-48 left-1/4 animate-pulse"
+          style={{ 
+            animationDuration: '5s', 
+            animationDelay: '2s',
+            transform: `translate(${mousePosition.x}px, ${-mousePosition.y}px)`
+          }}
         ></div>
-        {/* Grid Pattern */}
+        
         <div 
-          className="absolute inset-0 opacity-5"
+          className="absolute inset-0 opacity-10"
           style={{
-            backgroundImage: 'linear-gradient(white 1px, transparent 1px), linear-gradient(90deg, white 1px, transparent 1px)',
+            backgroundImage: 'linear-gradient(rgba(139, 92, 246, 0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(139, 92, 246, 0.3) 1px, transparent 1px)',
             backgroundSize: '50px 50px',
             transform: `translateY(${scrollY * 0.3}px)`
           }}
@@ -65,59 +128,82 @@ export default function Portfolio() {
       </div>
 
       {/* Main Content */}
-      <main className="relative px-4 py-12 max-w-6xl mx-auto">
-        {/* Portfolio Title */}
-        <h1 
-          className={`text-white text-5xl md:text-6xl font-bold text-center mb-16 transition-all duration-1000 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-10'
-          }`}
-          style={{
-            textShadow: '0 0 40px rgba(255, 255, 255, 0.3)',
-          }}
-        >
-          "Portfolio"
-        </h1>
+      <main className="relative px-4 py-12 max-w-7xl mx-auto">
+        {/* Title */}
+        <div className="text-center mb-20">
+          <h1 
+            className={`text-6xl md:text-8xl font-black mb-6 bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent transition-all duration-1000 ${
+              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-10'
+            }`}
+            style={{
+              textShadow: '0 0 80px rgba(139, 92, 246, 0.5)',
+            }}
+          >
+            Portfolio
+          </h1>
+          <div className="h-1 w-48 mx-auto bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 rounded-full"></div>
+        </div>
 
         {/* Projects Section */}
-        <div className="mb-20">
+        <div 
+          className={`mb-20 transition-all duration-1000 delay-300 ${
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          }`}
+        >
+          <h2 className="text-5xl md:text-6xl font-black mb-10 bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+            🚀 Featured Projects
+          </h2>
           <div className="space-y-8">
             {projects.map((project, index) => (
               <div
                 key={project.name}
-                className={`group transition-all duration-1000 delay-${index * 100} ${
-                  isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'
+                className={`group relative transition-all duration-500 hover:scale-[1.02] ${
+                  hasAnimated.current ? 'opacity-100' : 'animate-fade-in'
                 }`}
-                style={{
-                  transitionDelay: `${300 + index * 150}ms`,
-                }}
+                style={!hasAnimated.current ? {
+                  animationDelay: `${index * 0.15}s`,
+                } : undefined}
               >
                 <div className="relative">
-                  {/* Glow effect */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
+                  <div className={`absolute inset-0 bg-gradient-to-br ${project.color} rounded-3xl blur-2xl opacity-0 group-hover:opacity-30 transition-all duration-300`}></div>
                   
-                  {/* Project card */}
-                  <div className="relative bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 shadow-2xl hover:bg-white/15 transition-all duration-300 hover:scale-[1.02]">
-                    <div className="flex items-start gap-6">
+                  <div className="relative bg-white/5 backdrop-blur-xl rounded-3xl p-8 md:p-10 border border-white/20 group-hover:border-white/40 shadow-2xl transition-all duration-300">
+                    <div className="flex flex-col md:flex-row items-start gap-6">
                       {/* Icon */}
-                      <div className={`flex-shrink-0 w-16 h-16 bg-gradient-to-br ${project.color} rounded-2xl flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                        {project.icon}
+                      <div className="flex-shrink-0">
+                        <div className="relative">
+                          <div className={`absolute inset-0 bg-gradient-to-br ${project.color} rounded-2xl blur-lg opacity-50`}></div>
+                          <div className={`relative w-20 h-20 bg-gradient-to-br ${project.color} rounded-2xl flex items-center justify-center text-4xl shadow-xl group-hover:scale-110 transition-transform duration-300`}>
+                            {project.icon}
+                          </div>
+                        </div>
                       </div>
                       
                       {/* Content */}
                       <div className="flex-1">
-                        <h3 className="text-white text-2xl md:text-3xl font-bold mb-3">
+                        <h3 className={`text-3xl md:text-4xl font-black mb-3 bg-gradient-to-r ${project.color} bg-clip-text text-transparent`}>
                           {project.name}
                         </h3>
                         <p className="text-white/80 text-base md:text-lg mb-4 leading-relaxed">
                           {project.details}
                         </p>
                         
+                        {/* Achievements */}
+                        <div className="mb-4 grid grid-cols-1 sm:grid-cols-3 gap-2">
+                          {project.achievements.map((achievement) => (
+                            <div key={achievement} className="flex items-center gap-2">
+                              <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${project.color}`}></div>
+                              <span className="text-white/70 text-sm">{achievement}</span>
+                            </div>
+                          ))}
+                        </div>
+                        
                         {/* Tags */}
                         <div className="flex flex-wrap gap-2">
                           {project.tags.map((tag) => (
                             <span
                               key={tag}
-                              className="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white text-sm font-semibold border border-white/30"
+                              className="px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-white text-sm font-semibold border border-white/20 hover:bg-white/20 transition-colors"
                             >
                               {tag}
                             </span>
@@ -132,95 +218,140 @@ export default function Portfolio() {
           </div>
         </div>
 
-        {/* Experiences Title */}
-        <h2 
-          className={`text-white text-5xl md:text-6xl font-bold text-center mb-16 transition-all duration-1000 delay-700 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-10'
-          }`}
-          style={{
-            textShadow: '0 0 40px rgba(255, 255, 255, 0.3)',
-          }}
-        >
-          "Experiences"
-        </h2>
-
         {/* Experiences Section */}
-        <div className="space-y-8">
-          {experiences.map((experience, index) => (
-            <div
-              key={experience.title}
-              className={`group transition-all duration-1000 ${
-                isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'
-              }`}
-              style={{
-                transitionDelay: `${900 + index * 150}ms`,
-              }}
-            >
-              <div className="relative">
-                {/* Glow effect */}
-                <div className="absolute inset-0 bg-gradient-to-l from-white/10 to-transparent rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
-                
-                {/* Experience card */}
-                <div className="relative bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 shadow-2xl hover:bg-white/15 transition-all duration-300 hover:scale-[1.02]">
-                  <div className="flex items-start gap-6">
-                    {/* Icon */}
-                    <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-rose-400 to-red-600 rounded-2xl flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                      {experience.icon}
-                    </div>
-                    
-                    {/* Content */}
-                    <div className="flex-1">
-                      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-3">
-                        <h3 className="text-white text-2xl md:text-3xl font-bold">
-                          {experience.title}
-                        </h3>
-                        <span className="text-white/70 font-semibold text-sm md:text-base mt-1 md:mt-0">
-                          {experience.period}
-                        </span>
+        <div 
+          className={`mb-20 transition-all duration-1000 delay-500 ${
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          }`}
+        >
+          <h2 className="text-5xl md:text-6xl font-black mb-10 bg-gradient-to-r from-pink-400 to-rose-400 bg-clip-text text-transparent">
+            💼 Work Experience
+          </h2>
+          <div className="relative">
+            {/* Timeline Line */}
+            <div className="absolute left-4 md:left-10 top-0 bottom-0 w-1 bg-gradient-to-b from-cyan-400 via-purple-400 to-pink-400 rounded-full hidden md:block"></div>
+            
+            <div className="space-y-8">
+              {experiences.map((experience, index) => (
+                <div
+                  key={experience.title}
+                  className={`group relative transition-all duration-500 ${
+                    hasAnimated.current ? 'opacity-100' : 'animate-fade-in'
+                  }`}
+                  style={!hasAnimated.current ? {
+                    animationDelay: `${0.5 + index * 0.15}s`,
+                  } : undefined}
+                >
+                  <div className="relative md:ml-24">
+                    {/* Timeline Dot */}
+                    <div className="absolute -left-[4.5rem] top-10 hidden md:block">
+                      <div className="relative">
+                        <div className={`absolute inset-0 bg-gradient-to-br ${experience.color} rounded-full blur-lg opacity-70 animate-pulse`}></div>
+                        <div className={`relative w-8 h-8 bg-gradient-to-br ${experience.color} rounded-full border-4 border-slate-900 shadow-xl group-hover:scale-125 transition-transform duration-300`}></div>
                       </div>
-                      <p className="text-rose-200 text-lg font-semibold mb-3">
-                        {experience.company}
-                      </p>
-                      <p className="text-white/80 text-base md:text-lg leading-relaxed">
-                        {experience.details}
-                      </p>
+                    </div>
+
+                    <div className="relative hover:scale-[1.02] transition-all duration-300">
+                      <div className={`absolute inset-0 bg-gradient-to-br ${experience.color} rounded-3xl blur-2xl opacity-0 group-hover:opacity-30 transition-all duration-300`}></div>
+                      
+                      <div className="relative bg-white/5 backdrop-blur-xl rounded-3xl p-8 md:p-10 border border-white/20 group-hover:border-white/40 shadow-2xl transition-all duration-300">
+                        <div className="flex flex-col md:flex-row items-start gap-6">
+                          {/* Icon */}
+                          <div className="flex-shrink-0">
+                            <div className="relative">
+                              <div className={`absolute inset-0 bg-gradient-to-br ${experience.color} rounded-2xl blur-lg opacity-50`}></div>
+                              <div className={`relative w-20 h-20 bg-gradient-to-br ${experience.color} rounded-2xl flex items-center justify-center text-4xl shadow-xl group-hover:scale-110 transition-transform duration-300`}>
+                                {experience.icon}
+                              </div>
+                            </div>
+                          </div>
+                          
+                          {/* Content */}
+                          <div className="flex-1">
+                            <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-3 gap-2">
+                              <h3 className={`text-3xl md:text-4xl font-black bg-gradient-to-r ${experience.color} bg-clip-text text-transparent`}>
+                                {experience.title}
+                              </h3>
+                              <span className={`px-4 py-1.5 bg-gradient-to-r ${experience.color} rounded-full text-white text-sm font-bold shadow-lg flex-shrink-0 w-fit`}>
+                                {experience.period}
+                              </span>
+                            </div>
+                            <p className="text-white text-xl font-bold mb-3">
+                              {experience.company}
+                            </p>
+                            <p className="text-white/80 text-base md:text-lg mb-4 leading-relaxed">
+                              {experience.details}
+                            </p>
+                            
+                            {/* Highlights */}
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                              {experience.highlights.map((highlight) => (
+                                <div key={highlight} className="flex items-center gap-2">
+                                  <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${experience.color}`}></div>
+                                  <span className="text-white/70 text-sm">{highlight}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
 
         {/* Call to Action */}
         <div 
-          className={`mt-16 text-center transition-all duration-1000 delay-1200 ${
+          className={`transition-all duration-1000 delay-700 ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}
         >
-          <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 shadow-2xl max-w-2xl mx-auto">
-            <h3 className="text-white text-3xl font-bold mb-4">
-              Interested in working together?
-            </h3>
-            <p className="text-white/80 text-lg mb-6">
-              Feel free to reach out for collaborations or just a friendly chat!
-            </p>
-            <button className="bg-white text-red-700 px-8 py-3 rounded-full font-bold text-lg hover:bg-rose-100 transition-all duration-300 hover:scale-105 shadow-xl">
-              Get In Touch 📧
-            </button>
+          <div className="relative group">
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 rounded-3xl blur-2xl opacity-30 group-hover:opacity-50 transition-all duration-300"></div>
+            
+            <div className="relative bg-white/5 backdrop-blur-xl rounded-3xl p-12 border border-white/20 shadow-2xl text-center max-w-3xl mx-auto">
+              <div className="text-6xl mb-6 animate-bounce">🚀</div>
+              <h3 className="text-4xl md:text-5xl font-black mb-4 bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                Let's Build Something Amazing
+              </h3>
+              <p className="text-white/80 text-lg md:text-xl mb-8 leading-relaxed">
+                Ready to collaborate on exciting projects? Let's connect and create something extraordinary together!
+              </p>
+              <button className="group/btn relative px-8 py-4 rounded-full font-bold text-lg transition-all duration-300 hover:scale-105">
+                <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 rounded-full blur-lg opacity-70 group-hover/btn:opacity-100 transition-opacity"></div>
+                <a href="mailto:bombbomb925@gmail.com" className="relative bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 rounded-full px-8 py-4 text-slate-900 font-black shadow-xl flex items-center gap-3">
+                  Get In Touch
+                  <span className="text-2xl group-hover/btn:translate-x-1 transition-transform">📧</span>
+                </a>
+              </button>
+            </div>
           </div>
         </div>
       </main>
 
       {/* Custom animations styles */}
       <style jsx>{`
-        @keyframes float {
-          0%, 100% {
-            transform: translateY(0px);
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
           }
-          50% {
-            transform: translateY(-15px);
+          to {
+            opacity: 1;
+            transform: translateY(0);
           }
+        }
+        
+        .animate-fade-in {
+          animation: fadeInUp 0.6s ease-out both;
+          animation-play-state: running;
+        }
+        
+        .animate-fade-in:hover {
+          animation-play-state: paused;
         }
       `}</style>
     </div>
