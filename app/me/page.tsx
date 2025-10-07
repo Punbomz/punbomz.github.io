@@ -168,40 +168,6 @@ export default function AboutMe() {
           </div>
         </div>
 
-        {/* Skills with Progress Bars */}
-        <div 
-          className={`mb-20 transition-all duration-1000 delay-500 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-          }`}
-        >
-          <h2 className="text-5xl md:text-6xl font-black text-center mb-12 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-            🚀 Main Skills
-          </h2>
-          <div className="max-w-3xl mx-auto bg-white/5 backdrop-blur-xl rounded-3xl p-8 md:p-12 border border-white/10 shadow-2xl">
-            {skills.map((skill, index) => (
-              <div key={index} className="mb-8 last:mb-0">
-                <div className="flex justify-between mb-3">
-                  <span className="text-xl font-bold bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
-                    {skill.name}
-                  </span>
-                  <span className="text-lg font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
-                    {skill.level}%
-                  </span>
-                </div>
-                <div className="h-3 bg-white/10 rounded-full overflow-hidden">
-                  <div 
-                    className={`h-full ${skill.color} rounded-full transition-all duration-1000 ease-out shadow-lg`}
-                    style={{ 
-                      width: isVisible ? `${skill.level}%` : '0%',
-                      boxShadow: '0 0 20px currentColor'
-                    }}
-                  ></div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
         {/* Strengths - Card Layout */}
         <div 
           className={`mb-20 transition-all duration-1000 delay-700 ${
