@@ -1,0 +1,28 @@
+[
+  {
+    "title": "Embedded Systems Engineer",
+    "company": "Innovation Labs",
+    "period": "2022 - 2023",
+    "details": "Designed and programmed embedded systems for IoT devices. Worked with Arduino and Raspberry Pi to create smart home solutions and industrial automation systems.",
+    "icon": "✈️",
+    "color": "from-cyan-400 to-blue-500",
+    "highlights": [
+      "Deployed 50+ IoT devices",
+      "Optimized power consumption",
+      "Developed custom PCBs"
+    ]
+  },
+  {
+    "title": "Frontend Developer Intern",
+    "company": "Tech Startup Co.",
+    "period": "2023 - 2024",
+    "details": "Developed responsive web applications using React and TypeScript. Collaborated with designers to implement pixel-perfect UI components. Improved website performance by 40%.",
+    "icon": "✈️",
+    "color": "from-cyan-400 to-blue-500",
+    "highlights": [
+      "Built 15+ reusable components",
+      "Reduced bundle size by 35%",
+      "Led UI/UX redesign"
+    ]
+  }
+]

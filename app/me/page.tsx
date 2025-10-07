@@ -331,7 +331,7 @@ export default function AboutMe() {
             <div className="absolute inset-0 bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 rounded-3xl blur-2xl opacity-20 group-hover:opacity-30 transition-opacity"></div>
             <div className="relative bg-white/5 backdrop-blur-xl rounded-3xl p-8 md:p-12 border border-white/20 shadow-2xl">
               <div className="space-y-6">
-                <a href="mailto:bombbomb925@gmail.com" className="group/item flex items-center gap-6 p-6 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/30 transition-all duration-300 hover:scale-105">
+                <a href="mailto:puntakantroojang2547@gmail.com" className="group/item flex items-center gap-6 p-6 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/30 transition-all duration-300 hover:scale-105">
                   <div className="flex-shrink-0 w-14 h-14 rounded-full bg-gradient-to-br from-red-400 to-pink-400 flex items-center justify-center text-2xl shadow-lg">
                     📧
                   </div>
@@ -340,7 +340,7 @@ export default function AboutMe() {
                       EMAIL
                     </p>
                     <p className="text-lg md:text-xl font-medium text-white group-hover/item:bg-gradient-to-r group-hover/item:from-white group-hover/item:to-pink-200 group-hover/item:bg-clip-text group-hover/item:text-transparent transition-all">
-                      bombbomb925@gmail.com
+                      puntakantroojang2547@gmail.com
                     </p>
                   </div>
                 </a>

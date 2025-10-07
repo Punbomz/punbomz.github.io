@@ -1,0 +1,36 @@
+[
+  {
+    "name": "AI Chat Application",
+    "details": "Real-time chat application with AI-powered responses using OpenAI API. Features include message threading, user authentication, and intelligent context awareness.",
+    "icon": "🆕",
+    "tags": [
+      "React",
+      "Node.js",
+      "OpenAI",
+      "WebSocket"
+    ],
+    "color": "from-blue-500 to-cyan-500",
+    "achievements": [
+      "Real-time messaging",
+      "AI integration",
+      "Smart context handling"
+    ]
+  },
+  {
+    "name": "E-Commerce Platform",
+    "details": "A full-stack e-commerce platform built with Next.js, featuring product management, shopping cart, and secure payment integration. Implemented responsive design and optimized performance.",
+    "icon": "🆕",
+    "tags": [
+      "Next.js",
+      "React",
+      "Tailwind",
+      "Stripe"
+    ],
+    "color": "from-blue-500 to-cyan-500",
+    "achievements": [
+      "40% faster load times",
+      "Secure payment processing",
+      "Mobile-first design"
+    ]
+  }
+]
