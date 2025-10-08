@@ -2,6 +2,41 @@
 
 import { useState, useEffect, useRef } from 'react';
 
+interface Programming {
+  name: string;
+  icon: string;
+  level: string;
+  color: string;
+}
+
+interface Framework {
+  name: string;
+  icon: string;
+  level: string;
+  color: string;
+}
+
+interface Hardware {
+  name: string;
+  icon: string;
+  level: string;
+  color: string;
+}
+
+interface Computer {
+  name: string;
+  icon: string;
+  level: string;
+  color: string;
+}
+
+interface softSkill {
+  name: string;
+  description: string;
+  icon: string;
+  color: string;
+}
+
 export default function Skills() {
   const [scrollY, setScrollY] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
@@ -12,6 +47,18 @@ export default function Skills() {
     concepts: false,
     soft: false
   });
+
+  const [programmingLoading, setProgrammingLoading] = useState(true);
+  const [frameworkLoading, setFrameworkLoading] = useState(true);
+  const [hardwareLoading, setHardwareLoading] = useState(true);
+  const [computerLoading, setComputerLoading] = useState(true);
+  const [softskillLoading, setSoftskillLoading] = useState(true);
+
+  const [programmings, setProgramming] = useState<Programming[]>([]);
+  const [frameworks, setFramework] = useState<Framework[]>([]);
+  const [hardwares, setHardware] = useState<Hardware[]>([]);
+  const [computers, setComputer] = useState<Computer[]>([]);
+  const [softskills, setSoftskill] = useState<softSkill[]>([]);
   
   const sectionRefs = {
     programming: useRef<HTMLDivElement>(null),
@@ -92,65 +139,69 @@ export default function Skills() {
       if (ref.current) observer.observe(ref.current);
     });
 
+    fetchData();
+
     return () => observer.disconnect();
 
   }, []);
 
-  const programmingSkills = [
-    { name: 'Python', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg', level: 'Expert', color: 'from-yellow-400 to-blue-500' },
-    { name: 'C', icon: 'https://img.icons8.com/?size=512&id=40670&format=png', level: 'Advanced', color: 'from-blue-400 to-purple-500' },
-    { name: 'C++', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg', level: 'Expert', color: 'from-blue-500 to-pink-500' },
-    { name: 'C#', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/csharp/csharp-original.svg', level: 'Intermediate', color: 'from-purple-400 to-pink-500' },
-    { name: 'HTML5', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg', level: 'Expert', color: 'from-orange-400 to-red-500' },
-    { name: 'PHP', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg', level: 'Expert', color: 'from-purple-400 to-blue-500' },
-    { name: 'MySQL', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg', level: 'Intermediate', color: 'from-blue-400 to-cyan-500' },
-    { name: 'JavaScript', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg', level: 'Intermediate', color: 'from-yellow-400 to-orange-500' },
-    { name: 'TypeScript', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg', level: 'Intermediate', color: 'from-blue-500 to-cyan-500' },
-    { name: 'Java', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg', level: 'Basic', color: 'from-red-400 to-orange-500' },
-    { name: 'Dart', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/dart/dart-original.svg', level: 'Beginner', color: 'from-cyan-400 to-blue-500' },
-  ];
+  async function fetchData() {
+    try {
+      // Fetch
+      fetch('/api/programming')
+        .then(res => res.json())
+        .then(data => {
+          setProgramming(data);
+        })
+        .catch(err => {
+          console.error('Error fetching programming:', err);
+        });
 
-  const frameworksTools = [
-    { name: 'React', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg', level: 'Intermediate', color: 'from-cyan-400 to-blue-500' },
-    { name: 'Next.js', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg', level: 'Intermediate', color: 'from-slate-400 to-slate-600' },
-    { name: 'Node.js', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg', level: 'Intermediate', color: 'from-green-400 to-emerald-500' },
-    { name: 'Git', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg', level: 'Intermediate', color: 'from-orange-400 to-red-500' },
-    { name: 'Docker', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg', level: 'Beginner', color: 'from-blue-400 to-cyan-500' },
-    { name: 'Linux', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg', level: 'Advanced', color: 'from-yellow-400 to-orange-500' },
-    { name: 'VS Code', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg', level: 'Expert', color: 'from-blue-500 to-purple-500' },
-    { name: 'Flutter', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flutter/flutter-original.svg', level: 'Beginner', color: 'from-cyan-400 to-blue-500' },
-    { name: 'Bootstrap', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg', level: 'Advanced', color: 'from-purple-500 to-pink-500' },
-    { name: 'Tailwind CSS', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg', level: 'Intermediate', color: 'from-cyan-400 to-blue-500' },
-  ];
+      fetch('/api/framework')
+        .then(res => res.json())
+        .then(data => {
+          setFramework(data);
+        })
+        .catch(err => {
+          console.error('Error fetching framework:', err);
+        });
 
-  const hardwareSkills = [
-    { name: 'Circuit Design', icon: '🔌', level: 'Intermediate', color: 'from-yellow-400 to-orange-500' },
-    { name: 'Arduino', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/arduino/arduino-original.svg', level: 'Intermediate', color: 'from-cyan-400 to-teal-500' },
-    { name: 'Raspberry Pi', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/raspberrypi/raspberrypi-original.svg', level: 'Intermediate', color: 'from-red-400 to-pink-500' },
-    { name: 'PCB Design', icon: '🖨️', level: 'Basic', color: 'from-green-400 to-emerald-500' },
-    { name: 'Embedded Systems', icon: '⚙️', level: 'Intermediate', color: 'from-slate-400 to-slate-600' },
-    { name: 'IoT', icon: '📡', level: 'Advanced', color: 'from-purple-400 to-pink-500' },
-  ];
+      fetch('/api/hardware')
+        .then(res => res.json())
+        .then(data => {
+          setHardware(data);
+        })
+        .catch(err => {
+          console.error('Error fetching hardware:', err);
+        });
 
-  const engineeringConcepts = [
-    { name: 'Data Structures', level: 'Intermediate', icon: '🗂️' },
-    { name: 'Algorithms', level: 'Advanced', icon: '🧮' },
-    { name: 'Operating Systems', level: 'Advanced', icon: '💻' },
-    { name: 'Computer Networks', level: 'Basic', icon: '🌐' },
-    { name: 'Database Systems', level: 'Advanced', icon: '🗄️' },
-    { name: 'Software Engineering', level: 'Advanced', icon: '⚡' },
-    { name: 'Digital Logic Design', level: 'Advanced', icon: '🔢' },
-    { name: 'Computer Architecture', level: 'Intermediate', icon: '🏗️' },
-  ];
+      fetch('/api/computer')
+        .then(res => res.json())
+        .then(data => {
+          setComputer(data);
+        })
+        .catch(err => {
+          console.error('Error fetching computer:', err);
+        });
 
-  const softSkills = [
-    { name: 'Teamwork', icon: '🤝', description: 'Collaborating effectively with team members', color: 'from-blue-500 to-cyan-500' },
-    { name: 'Problem Solving', icon: '🧩', description: 'Finding creative solutions to challenges', color: 'from-purple-500 to-pink-500' },
-    { name: 'Team Leading', icon: '👑', description: 'Guiding and motivating teams to success', color: 'from-yellow-500 to-orange-500' },
-    { name: 'Communication', icon: '💬', description: 'Clear and effective communication', color: 'from-green-500 to-emerald-500' },
-    { name: 'Time Management', icon: '⏰', description: 'Efficiently organizing tasks and priorities', color: 'from-red-500 to-pink-500' },
-    { name: 'Adaptability', icon: '🔄', description: 'Quickly adjusting to new situations', color: 'from-cyan-500 to-blue-500' },
-  ];
+      fetch('/api/softskill')
+        .then(res => res.json())
+        .then(data => {
+          setSoftskill(data);
+        })
+        .catch(err => {
+          console.error('Error fetching softskill:', err);
+        });
+
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setProgrammingLoading(false);
+      setFrameworkLoading(false);
+      setHardwareLoading(false);
+      setComputerLoading(false);
+      setSoftskillLoading(false);
+    }
+  }
 
   const getLevelGradient = (level: string) => {
     switch(level) {
@@ -363,7 +414,7 @@ export default function Skills() {
                 ref={scrollContainerRefs.programming}
                 className="grid grid-rows-1 md:grid-rows-2 grid-flow-col auto-cols-[minmax(150px,1fr)] gap-6 overflow-x-auto scrollbar-hide"
               >
-                {[...programmingSkills, ...programmingSkills].map((skill, index) => (
+                {[...programmings, ...programmings].map((skill, index) => (
                   <SkillCard key={`${skill.name}-${index}`} skill={skill} index={index} showLevel={true} isVisible={sectionsVisible.programming} />
                 ))}
               </div>
@@ -388,7 +439,7 @@ export default function Skills() {
                 ref={scrollContainerRefs.frameworks}
                 className="grid grid-rows-1 md:grid-rows-2 grid-flow-col auto-cols-[minmax(150px,1fr)] gap-6 overflow-x-auto scrollbar-hide"
               >
-                {[...frameworksTools, ...frameworksTools].map((skill, index) => (
+                {[...frameworks, ...frameworks].map((skill, index) => (
                   <SkillCard key={`${skill.name}-${index}`} skill={skill} index={index} showLevel={true} isVisible={sectionsVisible.frameworks} />
                 ))}
               </div>
@@ -413,7 +464,7 @@ export default function Skills() {
                 ref={scrollContainerRefs.hardware}
                 className="grid grid-rows-1 md:grid-rows-2 grid-flow-col auto-cols-[minmax(150px,1fr)] gap-6 overflow-x-auto scrollbar-hide"
               >
-                {[...hardwareSkills, ...hardwareSkills].map((skill, index) => (
+                {[...hardwares, ...hardwares].map((skill, index) => (
                   <SkillCard key={`${skill.name}-${index}`} skill={skill} index={index} showLevel={true} isVisible={sectionsVisible.hardware} />
                 ))}
               </div>
@@ -435,7 +486,7 @@ export default function Skills() {
           <div className="relative max-w-5xl mx-auto">
             <div className="relative bg-white/5 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-white/10 shadow-xl">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {engineeringConcepts.map((item, index) => (
+                {computers.map((item, index) => (
                   <div 
                     key={item.name} 
                     className={`group/item relative transition-all duration-500 ${
@@ -486,7 +537,7 @@ export default function Skills() {
           <div className="relative">
             <div className="relative bg-white/5 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-white/10 shadow-xl">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {softSkills.map((skill, index) => (
+                {softskills.map((skill, index) => (
                   <div
                     key={skill.name}
                     className={`group/soft relative transition-all duration-500 hover:scale-105 hover:-rotate-1 ${
