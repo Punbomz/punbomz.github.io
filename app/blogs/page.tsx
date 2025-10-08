@@ -13,6 +13,71 @@ type BlogPost = {
   link: string;
 };
 
+// Loading skeleton component for blog cards
+function BlogCardSkeleton() {
+  return (
+    <div className="relative animate-pulse">
+      <div className="relative bg-white/5 backdrop-blur-xl rounded-3xl p-6 border border-white/20 shadow-2xl h-full flex flex-col">
+        {/* Category Badge and Date */}
+        <div className="flex items-center justify-between mb-4">
+          <div className="h-6 w-20 bg-white/10 rounded-full"></div>
+          <div className="h-4 w-24 bg-white/10 rounded"></div>
+        </div>
+
+        {/* Title */}
+        <div className="space-y-2 mb-3">
+          <div className="h-6 bg-white/10 rounded w-3/4"></div>
+          <div className="h-6 bg-white/10 rounded w-1/2"></div>
+        </div>
+
+        {/* Description */}
+        <div className="space-y-2 mb-4 flex-grow">
+          <div className="h-3 bg-white/10 rounded w-full"></div>
+          <div className="h-3 bg-white/10 rounded w-5/6"></div>
+          <div className="h-3 bg-white/10 rounded w-4/6"></div>
+        </div>
+
+        {/* Tags */}
+        <div className="flex gap-2 pt-4 border-t border-white/10">
+          <div className="h-6 w-16 bg-white/10 rounded-full"></div>
+          <div className="h-6 w-20 bg-white/10 rounded-full"></div>
+          <div className="h-6 w-14 bg-white/10 rounded-full"></div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Loading skeleton for search bar
+function SearchBarSkeleton() {
+  return (
+    <div className="max-w-3xl mx-auto mb-8">
+      <div className="relative animate-pulse">
+        <div className="h-16 bg-white/10 backdrop-blur-xl rounded-full border border-white/20"></div>
+      </div>
+    </div>
+  );
+}
+
+// Loading skeleton for tag filter
+function TagFilterSkeleton() {
+  return (
+    <div className="relative animate-pulse">
+      <div className="relative bg-white/5 backdrop-blur-xl rounded-3xl p-6 border border-white/20">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-6 h-6 bg-white/10 rounded"></div>
+          <div className="h-5 w-32 bg-white/10 rounded"></div>
+        </div>
+        <div className="flex flex-wrap gap-3">
+          {[...Array(8)].map((_, i) => (
+            <div key={i} className="h-10 w-20 bg-white/10 rounded-full"></div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function BlogPage() {
   const [scrollY, setScrollY] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
@@ -22,6 +87,7 @@ export default function BlogPage() {
   const hasAnimated = useRef(false);
 
   const [blogLoading, setBlogLoading] = useState(true);
+  const [initialLoadComplete, setInitialLoadComplete] = useState(false);
 
   const [blogs, setBlog] = useState<BlogPost[]>([]);
 
@@ -49,15 +115,19 @@ export default function BlogPage() {
         .then(data => {
           setBlog(data);
           setBlogLoading(false);
+          // Small delay to show at least some loading state
+          setTimeout(() => setInitialLoadComplete(true), 300);
         })
         .catch(err => {
           console.error('Error fetching blogs:', err);
           setBlogLoading(false);
+          setInitialLoadComplete(true);
         });
 
     } catch (error) {
       console.error('Error fetching data:', error);
       setBlogLoading(false);
+      setInitialLoadComplete(true);
     }
   }
 
@@ -78,6 +148,10 @@ export default function BlogPage() {
       default: return 'from-orange-500 to-red-500';
     }
   };
+
+  // Calculate how many skeletons to show
+  const skeletonCount = blogLoading ? 6 : 0;
+  const showingSkeletons = blogLoading && blogs.length === 0;
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 pb-24">
@@ -190,7 +264,9 @@ export default function BlogPage() {
           }`}
         >
           {/* Search Bar */}
-          {blogs.length > 0 && (
+          {showingSkeletons ? (
+            <SearchBarSkeleton />
+          ) : blogs.length > 0 && (
             <div className="max-w-3xl mx-auto mb-8">
               <div className="relative group">
                 <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 rounded-full blur-xl opacity-30 group-focus-within:opacity-60 transition-all duration-300"></div>
@@ -209,7 +285,9 @@ export default function BlogPage() {
           )}
 
           {/* Tag Filter */}
-          {blogs.length > 0 && (
+          {showingSkeletons ? (
+            <TagFilterSkeleton />
+          ) : blogs.length > 0 && (
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-3xl blur-2xl opacity-10 pointer-events-none"></div>
               <div className="relative bg-white/5 backdrop-blur-xl rounded-3xl p-6 border border-white/20">
@@ -241,75 +319,81 @@ export default function BlogPage() {
         </div>
 
         {/* Blog Posts Grid */}
-        {filteredPosts.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredPosts.map((post, index) => (
-              <div
-                key={post.id}
-                className={`group relative transition-all duration-500 hover:scale-105 ${
-                  hasAnimated.current ? 'opacity-100' : 'animate-fade-in'
-                }`}
-                style={!hasAnimated.current ? {
-                  animationDelay: `${0.4 + index * 0.1}s`,
-                } : undefined}
-              >
-                <div className="relative h-full">
-                  {/* Glow effect */}
-                  <div className={`absolute inset-0 bg-gradient-to-br ${getCategoryColor(post.category)} rounded-3xl blur-2xl opacity-0 group-hover:opacity-40 transition-all duration-300`}></div>
-                  
-                  {/* Card */}
-                  <a 
-                    href={post.link} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="block h-full" // Ensures the link fills its container
-                  >
-                    <div className="relative bg-white/5 backdrop-blur-xl rounded-3xl p-6 border border-white/20 group-hover:border-white/40 shadow-2xl transition-all duration-300 h-full flex flex-col">
-                      {/* Category Badge */}
-                      <div className="flex items-center justify-between mb-4">
-                        <span className={`px-4 py-1.5 rounded-full text-xs font-bold bg-gradient-to-r ${getCategoryColor(post.category)} text-white shadow-lg`}>
-                          {post.category}
-                        </span>
-                        <div className="flex items-center gap-2 text-white/60 text-sm">
-                          <Calendar size={14} />
-                          {/* The date 'October 9, 2025' is the current date */}
-                          <span>{new Date(post.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-                        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {/* Show actual blog posts */}
+          {filteredPosts.map((post, index) => (
+            <div
+              key={post.id}
+              className={`group relative transition-all duration-500 hover:scale-105 ${
+                initialLoadComplete ? 'opacity-100' : 'animate-fade-in'
+              }`}
+              style={!initialLoadComplete ? {
+                animationDelay: `${0.4 + index * 0.1}s`,
+              } : undefined}
+            >
+              <div className="relative h-full">
+                {/* Glow effect */}
+                <div className={`absolute inset-0 bg-gradient-to-br ${getCategoryColor(post.category)} rounded-3xl blur-2xl opacity-0 group-hover:opacity-40 transition-all duration-300`}></div>
+                
+                {/* Card */}
+                <a 
+                  href={post.link} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="block h-full"
+                >
+                  <div className="relative bg-white/5 backdrop-blur-xl rounded-3xl p-6 border border-white/20 group-hover:border-white/40 shadow-2xl transition-all duration-300 h-full flex flex-col">
+                    {/* Category Badge */}
+                    <div className="flex items-center justify-between mb-4">
+                      <span className={`px-4 py-1.5 rounded-full text-xs font-bold bg-gradient-to-r ${getCategoryColor(post.category)} text-white shadow-lg`}>
+                        {post.category}
+                      </span>
+                      <div className="flex items-center gap-2 text-white/60 text-sm">
+                        <Calendar size={14} />
+                        <span>{new Date(post.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                       </div>
-
-                      {/* Title */}
-                      <h3 className={`text-2xl font-black mb-3 bg-gradient-to-r ${getCategoryColor(post.category)} bg-clip-text text-transparent group-hover:scale-105 transition-transform origin-left`}>
-                        {post.title}
-                      </h3>
-
-                      {/* Description */}
-                      <p className="text-white/70 text-sm leading-relaxed mb-4 flex-grow truncate">
-                        {post.description}
-                      </p>
-
-                      {/* Tags */}
-                      <div className="flex items-center justify-start pt-4 border-t border-white/10">
-                        <div className="flex flex-wrap gap-3">
-                          {post.tags.map((tag) => (
-                            <span
-                              key={tag}
-                              className="text-white/80 text-xs px-3 py-1 bg-white/10 rounded-full border border-white/20 hover:bg-white/20 transition-colors"
-                            >
-                              #{tag}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Hover indicator */}
-                      <div className={`absolute top-4 right-4 w-3 h-3 bg-gradient-to-r ${getCategoryColor(post.category)} rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse`}></div>
                     </div>
-                  </a>
-                </div>
+
+                    {/* Title */}
+                    <h3 className={`text-2xl font-black mb-3 bg-gradient-to-r ${getCategoryColor(post.category)} bg-clip-text text-transparent group-hover:scale-105 transition-transform origin-left`}>
+                      {post.title}
+                    </h3>
+
+                    {/* Description */}
+                    <p className="text-white/70 text-sm leading-relaxed mb-4 flex-grow truncate">
+                      {post.description}
+                    </p>
+
+                    {/* Tags */}
+                    <div className="flex items-center justify-start pt-4 border-t border-white/10">
+                      <div className="flex flex-wrap gap-3">
+                        {post.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="text-white/80 text-xs px-3 py-1 bg-white/10 rounded-full border border-white/20 hover:bg-white/20 transition-colors"
+                          >
+                            #{tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Hover indicator */}
+                    <div className={`absolute top-4 right-4 w-3 h-3 bg-gradient-to-r ${getCategoryColor(post.category)} rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse`}></div>
+                  </div>
+                </a>
               </div>
-            ))}
-          </div>
-        ) : blogs.length !== 0 && (
+            </div>
+          ))}
+
+          {/* Show loading skeletons only if no blogs yet */}
+          {showingSkeletons && [...Array(skeletonCount)].map((_, i) => (
+            <BlogCardSkeleton key={`skeleton-${i}`} />
+          ))}
+        </div>
+
+        {/* No Results State */}
+        {!blogLoading && blogs.length !== 0 && filteredPosts.length === 0 && (
           <div 
             className={`text-center py-20 transition-all duration-1000 delay-500 ${
               isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
@@ -326,8 +410,8 @@ export default function BlogPage() {
           </div>
         )}
 
-        {/* Coming Soon Section - Uncomment if needed */}
-        {filteredPosts.length !== 0 && (
+        {/* Coming Soon Section */}
+        {!blogLoading && filteredPosts.length !== 0 && (
           <div 
             className={`text-center py-20 mt-8 transition-all duration-1000 delay-700 ${
               isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
