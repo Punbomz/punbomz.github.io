@@ -399,7 +399,7 @@ export default function BlogPage() {
         )}
 
         {/* Coming Soon Section */}
-        {!blogLoading && filteredPosts.length !== 0 && (
+        {(!blogLoading && filteredPosts.length !== 0) || (!blogLoading && blogs.length === 0) && (
           <div 
             className={`text-center py-20 mt-8 transition-all duration-1000 delay-700 ${
               isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
