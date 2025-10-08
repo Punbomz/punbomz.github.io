@@ -415,7 +415,7 @@ export default function AboutMe() {
                     <h2 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent mb-2">
                       Suratpittaya School
                     </h2>
-                    <p className="text-lg text-white/60">2018 - 2021</p>
+                    <p className="text-lg text-white/60">2017 - 2023</p>
                   </div>
                 </div>
               </div>
@@ -442,7 +442,7 @@ export default function AboutMe() {
                     <h2 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-white to-cyan-200 bg-clip-text text-transparent mb-2">
                       King Mongkut's University of Technology Thonburi
                     </h2>
-                    <p className="text-lg text-white/60">2021 - Present</p>
+                    <p className="bg-purple-400 text-lg text-black px-3 py-1 rounded-full w-fit">2023 - Present</p>
                   </div>
                 </div>
               </div>
