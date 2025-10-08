@@ -11,6 +11,7 @@ type BlogPost = {
   tags: string[];
   category: string;
   link: string;
+  publish: boolean;
 };
 
 // Loading skeleton component for blog cards
@@ -333,13 +334,15 @@ export default function BlogPage() {
                   <div className="relative bg-white/5 backdrop-blur-xl rounded-3xl p-6 border border-white/20 group-hover:border-white/40 shadow-2xl transition-all duration-300 h-full flex flex-col">
                     {/* Category Badge */}
                     <div className="flex items-center justify-between mb-4">
-                      <span className={`px-4 py-1.5 rounded-full text-xs font-bold bg-gradient-to-r ${getCategoryColor(post.category)} text-white shadow-lg`}>
-                        {post.category}
-                      </span>
                       <div className="flex items-center gap-2 text-white/60 text-sm">
                         <Calendar size={14} />
                         <span>{new Date(post.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                       </div>
+                      { post.category !== '' && (
+                        <span className={`px-4 py-1.5 rounded-full text-xs font-bold bg-gradient-to-r ${getCategoryColor(post.category)} text-white shadow-lg`}>
+                          {post.category}
+                        </span>
+                      )}
                     </div>
 
                     {/* Title */}
