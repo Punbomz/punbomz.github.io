@@ -63,7 +63,6 @@ function LoadingSkeleton({ type = 'project' }: { type?: 'project' | 'experience'
 export default function PortfolioClient() {
   const [scrollY, setScrollY] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
-  const hasAnimated = useRef(false);
   
   // Separate loading states for each section
   const [projectsLoading, setProjectsLoading] = useState(true);
@@ -77,20 +76,8 @@ export default function PortfolioClient() {
 
   useEffect(() => {
     setIsVisible(true);
-    hasAnimated.current = true;
     
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    
-    // Fetch data from API
     fetchData();
-    
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
   }, []);
 
   async function fetchData() {

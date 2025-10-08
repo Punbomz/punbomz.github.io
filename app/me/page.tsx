@@ -69,16 +69,8 @@ export default function AboutMe() {
 
   useEffect(() => {
     setIsVisible(true);
-    
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-    };
-
-    window.addEventListener('scroll', handleScroll);
 
     fetchData();
-
-    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   async function fetchData() {

@@ -84,7 +84,6 @@ export default function BlogPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTag, setSelectedTag] = useState('all');
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const hasAnimated = useRef(false);
 
   const [blogLoading, setBlogLoading] = useState(true);
   const [initialLoadComplete, setInitialLoadComplete] = useState(false);
@@ -93,19 +92,8 @@ export default function BlogPage() {
 
   useEffect(() => {
     setIsVisible(true);
-    hasAnimated.current = true;
     
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-
     fetchData();
-    
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
   }, []);
 
   async function fetchData() {
