@@ -21,6 +21,56 @@ export default function Skills() {
     soft: useRef<HTMLDivElement>(null)
   };
 
+  const scrollContainerRefs = {
+    programming: useRef<HTMLDivElement>(null),
+    frameworks: useRef<HTMLDivElement>(null),
+    hardware: useRef<HTMLDivElement>(null)
+  };
+
+  useEffect(() => {
+    const scrollSections = [
+      scrollContainerRefs.programming.current,
+      scrollContainerRefs.frameworks.current,
+      scrollContainerRefs.hardware.current
+    ];
+
+    const scrollIntervals = scrollSections.map((section) => {
+      if (!section) return null;
+      
+      let isPaused = false;
+
+      const handleMouseEnter = () => { isPaused = true; };
+      const handleMouseLeave = () => { isPaused = false; };
+
+      section.addEventListener('mouseenter', handleMouseEnter);
+      section.addEventListener('mouseleave', handleMouseLeave);
+
+      const interval = setInterval(() => {
+        if (!isPaused && section) {
+          section.scrollLeft += 1;
+          
+          // Seamlessly loop: when we reach halfway (end of first set), jump back to start
+          const halfWidth = section.scrollWidth / 2;
+          if (section.scrollLeft >= halfWidth) {
+            section.scrollLeft = 0;
+          }
+        }
+      }, 20);
+
+      return { interval, section, handleMouseEnter, handleMouseLeave };
+    });
+
+    return () => {
+      scrollIntervals.forEach(item => {
+        if (item) {
+          clearInterval(item.interval);
+          item.section.removeEventListener('mouseenter', item.handleMouseEnter);
+          item.section.removeEventListener('mouseleave', item.handleMouseLeave);
+        }
+      });
+    };
+  }, []);
+
   useEffect(() => {
     setIsVisible(true);
 
@@ -43,6 +93,7 @@ export default function Skills() {
     });
 
     return () => observer.disconnect();
+
   }, []);
 
   const programmingSkills = [
@@ -245,6 +296,15 @@ export default function Skills() {
         .animate-pulse-width {
           animation: pulse-width 2s ease-in-out infinite;
         }
+
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
       `}</style>
 
       {/* Animated Background Elements */}
@@ -303,10 +363,13 @@ export default function Skills() {
             💻 Programming Languages
           </h2>
           <div className="relative">
-            <div className="relative bg-white/5 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-white/10 shadow-xl">
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
-                {programmingSkills.map((skill, index) => (
-                  <SkillCard key={skill.name} skill={skill} index={index} showLevel={true} isVisible={sectionsVisible.programming} />
+            <div className="relative bg-white/5 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-white/10 shadow-xl overflow-hidden">
+              <div 
+                ref={scrollContainerRefs.programming}
+                className="grid grid-rows-1 md:grid-rows-2 grid-flow-col auto-cols-[minmax(150px,1fr)] gap-6 overflow-x-auto pb-4 scrollbar-hide"
+              >
+                {[...programmingSkills, ...programmingSkills].map((skill, index) => (
+                  <SkillCard key={`${skill.name}-${index}`} skill={skill} index={index} showLevel={true} isVisible={sectionsVisible.programming} />
                 ))}
               </div>
             </div>
@@ -325,10 +388,13 @@ export default function Skills() {
             🛠️ Frameworks & Tools
           </h2>
           <div className="relative">
-            <div className="relative bg-white/5 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-white/10 shadow-xl">
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
-                {frameworksTools.map((skill, index) => (
-                  <SkillCard key={skill.name} skill={skill} index={index} showLevel={true} isVisible={sectionsVisible.frameworks} />
+            <div className="relative bg-white/5 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-white/10 shadow-xl overflow-hidden">
+              <div 
+                ref={scrollContainerRefs.frameworks}
+                className="grid grid-rows-1 md:grid-rows-2 grid-flow-col auto-cols-[minmax(150px,1fr)] gap-6 overflow-x-auto pb-4 scrollbar-hide"
+              >
+                {[...frameworksTools, ...frameworksTools].map((skill, index) => (
+                  <SkillCard key={`${skill.name}-${index}`} skill={skill} index={index} showLevel={true} isVisible={sectionsVisible.frameworks} />
                 ))}
               </div>
             </div>
@@ -347,10 +413,13 @@ export default function Skills() {
             ⚡ Hardware & Embedded Systems
           </h2>
           <div className="relative">
-            <div className="relative bg-white/5 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-white/10 shadow-xl">
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
-                {hardwareSkills.map((skill, index) => (
-                  <SkillCard key={skill.name} skill={skill} index={index} showLevel={true} isVisible={sectionsVisible.hardware} />
+            <div className="relative bg-white/5 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-white/10 shadow-xl overflow-hidden">
+              <div 
+                ref={scrollContainerRefs.hardware}
+                className="grid grid-rows-1 md:grid-rows-2 grid-flow-col auto-cols-[minmax(150px,1fr)] gap-6 overflow-x-auto pb-4 scrollbar-hide"
+              >
+                {[...hardwareSkills, ...hardwareSkills].map((skill, index) => (
+                  <SkillCard key={`${skill.name}-${index}`} skill={skill} index={index} showLevel={true} isVisible={sectionsVisible.hardware} />
                 ))}
               </div>
             </div>
