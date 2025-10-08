@@ -29,19 +29,10 @@ export default function BlogPage() {
       setScrollY(window.scrollY);
     };
 
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({
-        x: (e.clientX / window.innerWidth - 0.5) * 20,
-        y: (e.clientY / window.innerHeight - 0.5) * 20,
-      });
-    };
-
     window.addEventListener('scroll', handleScroll);
-    window.addEventListener('mousemove', handleMouseMove);
     
     return () => {
       window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('mousemove', handleMouseMove);
     };
   }, []);
 
@@ -53,51 +44,6 @@ export default function BlogPage() {
       date: '2025-01-15',
       tags: ['React', 'JavaScript', 'Web Dev'],
       readTime: '5 min',
-      category: 'Tutorial'
-    },
-    {
-      id: 2,
-      title: 'Mastering TypeScript',
-      description: 'Deep dive into TypeScript features and best practices. Learn how type safety can improve your development workflow and catch bugs early.',
-      date: '2025-01-10',
-      tags: ['TypeScript', 'JavaScript'],
-      readTime: '8 min',
-      category: 'Guide'
-    },
-    {
-      id: 3,
-      title: 'Building IoT Projects',
-      description: 'A comprehensive guide to creating IoT solutions with Arduino and Raspberry Pi. From sensors to cloud integration.',
-      date: '2025-01-05',
-      tags: ['IoT', 'Hardware', 'Arduino'],
-      readTime: '12 min',
-      category: 'Project'
-    },
-    {
-      id: 4,
-      title: 'Next.js Performance Tips',
-      description: 'Optimize your Next.js applications for lightning-fast performance. Learn about code splitting, image optimization, and more.',
-      date: '2024-12-28',
-      tags: ['Next.js', 'Performance', 'Web Dev'],
-      readTime: '6 min',
-      category: 'Tutorial'
-    },
-    {
-      id: 5,
-      title: 'Database Design Patterns',
-      description: 'Essential database design patterns every developer should know. Improve your data modeling and query performance.',
-      date: '2024-12-20',
-      tags: ['Database', 'SQL', 'Architecture'],
-      readTime: '10 min',
-      category: 'Guide'
-    },
-    {
-      id: 6,
-      title: 'CSS Animations Magic',
-      description: 'Create stunning animations with modern CSS. From simple transitions to complex keyframe animations.',
-      date: '2024-12-15',
-      tags: ['CSS', 'Animation', 'Web Dev'],
-      readTime: '7 min',
       category: 'Tutorial'
     }
   ];
@@ -122,32 +68,68 @@ export default function BlogPage() {
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 pb-24">
+      <style jsx global>{`
+        @keyframes float {
+          0%, 100% { transform: translate(0, 0) rotate(0deg); }
+          25% { transform: translate(30px, -30px) rotate(90deg); }
+          50% { transform: translate(-20px, 20px) rotate(180deg); }
+          75% { transform: translate(40px, 10px) rotate(270deg); }
+        }
+        
+        @keyframes float-particle {
+          0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+          10% { opacity: 0.3; }
+          90% { opacity: 0.3; }
+          50% { transform: translateY(-100vh) translateX(50px); }
+        }
+        
+        @keyframes shimmer {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(200%); }
+        }
+        
+        @keyframes gradient-x {
+          0%, 100% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+        }
+        
+        @keyframes pulse-width {
+          0%, 100% { width: 12rem; }
+          50% { width: 16rem; }
+        }
+        
+        @keyframes pulse-glow {
+          0%, 100% { opacity: 0.2; }
+          50% { opacity: 0.4; }
+        }
+        
+        @keyframes bounce-subtle {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-5px); }
+        }
+        
+        .animate-float {
+          animation: float linear infinite;
+        }
+        
+        .animate-float-particle {
+          animation: float-particle linear infinite;
+        }
+        
+        .animate-gradient-x {
+          background-size: 200% 200%;
+          animation: gradient-x 3s ease infinite;
+        }
+        
+        .animate-pulse-width {
+          animation: pulse-width 2s ease-in-out infinite;
+        }
+      `}</style>
+
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div 
-          className="absolute w-96 h-96 bg-purple-500 rounded-full blur-3xl opacity-20 -top-48 -left-48 animate-pulse"
-          style={{ 
-            animationDuration: '4s',
-            transform: `translate(${mousePosition.x}px, ${mousePosition.y}px)`
-          }}
-        ></div>
-        <div 
-          className="absolute w-96 h-96 bg-pink-500 rounded-full blur-3xl opacity-20 top-1/2 -right-48 animate-pulse"
-          style={{ 
-            animationDuration: '6s', 
-            animationDelay: '1s',
-            transform: `translate(${-mousePosition.x}px, ${mousePosition.y}px)`
-          }}
-        ></div>
-        <div 
-          className="absolute w-96 h-96 bg-cyan-500 rounded-full blur-3xl opacity-20 -bottom-48 left-1/4 animate-pulse"
-          style={{ 
-            animationDuration: '5s', 
-            animationDelay: '2s',
-            transform: `translate(${mousePosition.x}px, ${-mousePosition.y}px)`
-          }}
-        ></div>
-        
+
+        {/* Animated Grid Pattern */}
         <div 
           className="absolute inset-0 opacity-10"
           style={{
@@ -156,6 +138,22 @@ export default function BlogPage() {
             transform: `translateY(${scrollY * 0.3}px)`
           }}
         ></div>
+
+        {/* Floating particles */}
+        <div className="absolute inset-0">
+          {[...Array(30)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute w-1 h-1 bg-white rounded-full opacity-20"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animation: `float ${3 + Math.random() * 4}s ease-in-out infinite`,
+                animationDelay: `${Math.random() * 2}s`
+              }}
+            ></div>
+          ))}
+        </div>
       </div>
 
       {/* Main Content */}
@@ -163,23 +161,13 @@ export default function BlogPage() {
         {/* Title */}
         <div className="text-center mb-20">
           <h1 
-            className={`text-6xl md:text-8xl font-black mb-6 bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent transition-all duration-1000 ${
+            className={`text-6xl md:text-8xl font-black mb-6 bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent transition-all duration-1000 animate-gradient-x ${
               isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-10'
             }`}
-            style={{
-              textShadow: '0 0 80px rgba(139, 92, 246, 0.5)',
-            }}
           >
             Blog
           </h1>
-          <div className="h-1 w-48 mx-auto bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 rounded-full"></div>
-          <p 
-            className={`mt-6 text-white/80 text-lg md:text-xl max-w-2xl mx-auto transition-all duration-1000 delay-200 ${
-              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-            }`}
-          >
-            Insights, tutorials, and thoughts on technology and development
-          </p>
+          <div className="h-1 w-48 mx-auto bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 rounded-full animate-pulse-width"></div>
         </div>
 
         {/* Search and Filter Section */}

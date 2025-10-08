@@ -49,50 +49,77 @@ export default function PortfolioClient({ projects, experiences, achievements = 
       setScrollY(window.scrollY);
     };
 
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({
-        x: (e.clientX / window.innerWidth - 0.5) * 20,
-        y: (e.clientY / window.innerHeight - 0.5) * 20,
-      });
-    };
-
     window.addEventListener('scroll', handleScroll);
-    window.addEventListener('mousemove', handleMouseMove);
     
     return () => {
       window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('mousemove', handleMouseMove);
     };
   }, []);
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 pb-24">
+      <style jsx global>{`
+        @keyframes float {
+          0%, 100% { transform: translate(0, 0) rotate(0deg); }
+          25% { transform: translate(30px, -30px) rotate(90deg); }
+          50% { transform: translate(-20px, 20px) rotate(180deg); }
+          75% { transform: translate(40px, 10px) rotate(270deg); }
+        }
+        
+        @keyframes float-particle {
+          0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+          10% { opacity: 0.3; }
+          90% { opacity: 0.3; }
+          50% { transform: translateY(-100vh) translateX(50px); }
+        }
+        
+        @keyframes shimmer {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(200%); }
+        }
+        
+        @keyframes gradient-x {
+          0%, 100% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+        }
+        
+        @keyframes pulse-width {
+          0%, 100% { width: 12rem; }
+          50% { width: 16rem; }
+        }
+        
+        @keyframes pulse-glow {
+          0%, 100% { opacity: 0.2; }
+          50% { opacity: 0.4; }
+        }
+        
+        @keyframes bounce-subtle {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-5px); }
+        }
+        
+        .animate-float {
+          animation: float linear infinite;
+        }
+        
+        .animate-float-particle {
+          animation: float-particle linear infinite;
+        }
+        
+        .animate-gradient-x {
+          background-size: 200% 200%;
+          animation: gradient-x 3s ease infinite;
+        }
+        
+        .animate-pulse-width {
+          animation: pulse-width 2s ease-in-out infinite;
+        }
+      `}</style>
+
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div 
-          className="absolute w-96 h-96 bg-purple-500 rounded-full blur-3xl opacity-20 -top-48 -left-48 animate-pulse"
-          style={{ 
-            animationDuration: '4s',
-            transform: `translate(${mousePosition.x}px, ${mousePosition.y}px)`
-          }}
-        ></div>
-        <div 
-          className="absolute w-96 h-96 bg-pink-500 rounded-full blur-3xl opacity-20 top-1/2 -right-48 animate-pulse"
-          style={{ 
-            animationDuration: '6s', 
-            animationDelay: '1s',
-            transform: `translate(${-mousePosition.x}px, ${mousePosition.y}px)`
-          }}
-        ></div>
-        <div 
-          className="absolute w-96 h-96 bg-cyan-500 rounded-full blur-3xl opacity-20 -bottom-48 left-1/4 animate-pulse"
-          style={{ 
-            animationDuration: '5s', 
-            animationDelay: '2s',
-            transform: `translate(${mousePosition.x}px, ${-mousePosition.y}px)`
-          }}
-        ></div>
-        
+
+        {/* Animated Grid Pattern */}
         <div 
           className="absolute inset-0 opacity-10"
           style={{
@@ -101,6 +128,22 @@ export default function PortfolioClient({ projects, experiences, achievements = 
             transform: `translateY(${scrollY * 0.3}px)`
           }}
         ></div>
+
+        {/* Floating particles */}
+        <div className="absolute inset-0">
+          {[...Array(30)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute w-1 h-1 bg-white rounded-full opacity-20"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animation: `float ${3 + Math.random() * 4}s ease-in-out infinite`,
+                animationDelay: `${Math.random() * 2}s`
+              }}
+            ></div>
+          ))}
+        </div>
       </div>
 
       {/* Main Content */}
@@ -108,16 +151,13 @@ export default function PortfolioClient({ projects, experiences, achievements = 
         {/* Title */}
         <div className="text-center mb-20">
           <h1 
-            className={`text-6xl md:text-8xl font-black mb-6 bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent transition-all duration-1000 ${
+            className={`text-6xl md:text-8xl font-black mb-6 bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent transition-all duration-1000 animate-gradient-x ${
               isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-10'
             }`}
-            style={{
-              textShadow: '0 0 80px rgba(139, 92, 246, 0.5)',
-            }}
           >
             Portfolio
           </h1>
-          <div className="h-1 w-48 mx-auto bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 rounded-full"></div>
+          <div className="h-1 w-48 mx-auto bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 rounded-full animate-pulse-width"></div>
         </div>
 
         {/* Projects Section */}
