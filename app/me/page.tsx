@@ -301,11 +301,11 @@ export default function AboutMe() {
                   <div className="flex-shrink-0 w-14 h-14 rounded-full bg-gradient-to-br from-red-400 to-pink-400 flex items-center justify-center text-2xl shadow-lg">
                     📧
                   </div>
-                  <div>
+                  <div className="min-w-0 flex-1">
                     <p className="text-sm font-semibold bg-gradient-to-r from-red-400 to-pink-400 bg-clip-text text-transparent mb-1">
                       EMAIL
                     </p>
-                    <p className="text-lg md:text-xl font-medium text-white group-hover/item:bg-gradient-to-r group-hover/item:from-white group-hover/item:to-pink-200 group-hover/item:bg-clip-text group-hover/item:text-transparent transition-all">
+                    <p className="text-lg md:text-xl font-medium text-white group-hover/item:bg-gradient-to-r group-hover/item:from-white group-hover/item:to-pink-200 group-hover/item:bg-clip-text group-hover/item:text-transparent transition-all break-all">
                       bombbomb925@gmail.com
                     </p>
                   </div>
