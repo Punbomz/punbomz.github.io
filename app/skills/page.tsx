@@ -34,39 +34,39 @@ export default function Skills() {
       scrollContainerRefs.hardware.current
     ];
 
-    const scrollIntervals = scrollSections.map((section) => {
-      if (!section) return null;
+    const animationFrameIds: number[] = [];
+
+    scrollSections.forEach((section) => {
+      if (!section) return;
       
-      let isPaused = false;
+      let scrollPosition = 0;
+      const scrollSpeed = 0.5; // pixels per frame for smooth animation
 
-      const handleMouseEnter = () => { isPaused = true; };
-      const handleMouseLeave = () => { isPaused = false; };
-
-      section.addEventListener('mouseenter', handleMouseEnter);
-      section.addEventListener('mouseleave', handleMouseLeave);
-
-      const interval = setInterval(() => {
-        if (!isPaused && section) {
-          section.scrollLeft += 1;
+      const scroll = () => {
+        if (section) {
+          scrollPosition += scrollSpeed;
+          section.scrollLeft = scrollPosition;
           
-          // Seamlessly loop: when we reach halfway (end of first set), jump back to start
-          const halfWidth = section.scrollWidth / 2;
-          if (section.scrollLeft >= halfWidth) {
+          // Get the width of a single set of items
+          const singleSetWidth = section.scrollWidth / 2;
+          
+          // When we've scrolled past one complete set, reset to the beginning
+          if (scrollPosition >= singleSetWidth) {
+            scrollPosition = 0;
             section.scrollLeft = 0;
           }
         }
-      }, 20);
+        const id = requestAnimationFrame(scroll);
+        animationFrameIds.push(id);
+      };
 
-      return { interval, section, handleMouseEnter, handleMouseLeave };
+      const id = requestAnimationFrame(scroll);
+      animationFrameIds.push(id);
     });
 
     return () => {
-      scrollIntervals.forEach(item => {
-        if (item) {
-          clearInterval(item.interval);
-          item.section.removeEventListener('mouseenter', item.handleMouseEnter);
-          item.section.removeEventListener('mouseleave', item.handleMouseLeave);
-        }
+      animationFrameIds.forEach(id => {
+        cancelAnimationFrame(id);
       });
     };
   }, []);
@@ -190,7 +190,7 @@ export default function Skills() {
 
   const SkillCard = ({ skill, index, showLevel = false, isVisible }: SkillCardProps) => (
     <div
-      className={`group relative transition-all duration-500 hover:scale-105 hover:-rotate-2 ${
+      className={`relative transition-all duration-500 ${
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
       }`}
       style={{
@@ -198,20 +198,15 @@ export default function Skills() {
       }}
     >
       <div className="relative h-full">
-        <div className={`absolute inset-0 bg-gradient-to-br ${skill.color || 'from-purple-500 to-pink-500'} rounded-2xl blur-lg opacity-0 group-hover:opacity-40 transition-all duration-300 group-hover:scale-110`}></div>
-        
-        <div className="relative bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-white/10 group-hover:border-white/30 shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col items-center justify-center gap-3 h-full group-hover:bg-white/10">
+        <div className="relative bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-white/10 shadow-lg transition-all duration-300 flex flex-col items-center justify-center gap-3 h-full">
           <div className="relative">
             {skill.icon.startsWith('http') ? (
-              <>
-                <div className={`absolute inset-0 bg-gradient-to-br ${skill.color || 'from-purple-500 to-pink-500'} rounded-full blur-sm opacity-0 group-hover:opacity-30 transition-all duration-300`}></div>
-                <img src={skill.icon} alt={skill.name} className="w-16 h-16 object-contain relative z-10 group-hover:scale-125 group-hover:rotate-12 transition-transform duration-300" style={{ animation: 'pulse-slow 3s ease-in-out infinite' }} />
-              </>
+              <img src={skill.icon} alt={skill.name} className="w-16 h-16 object-contain relative z-10 transition-transform duration-300" />
             ) : (
-              <span className="text-5xl group-hover:scale-125 group-hover:rotate-12 transition-transform duration-300 inline-block">{skill.icon}</span>
+              <span className="text-5xl transition-transform duration-300 inline-block">{skill.icon}</span>
             )}
           </div>
-          <p className={`font-bold text-sm text-center bg-gradient-to-r ${skill.color || 'from-white to-purple-200'} bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-300`}>
+          <p className={`font-bold text-sm text-center bg-gradient-to-r ${skill.color || 'from-white to-purple-200'} bg-clip-text text-transparent transition-transform duration-300`}>
             {skill.name}
           </p>
           {showLevel && skill.level && (
@@ -366,7 +361,7 @@ export default function Skills() {
             <div className="relative bg-white/5 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-white/10 shadow-xl overflow-hidden">
               <div 
                 ref={scrollContainerRefs.programming}
-                className="grid grid-rows-1 md:grid-rows-2 grid-flow-col auto-cols-[minmax(150px,1fr)] gap-6 overflow-x-auto pb-4 scrollbar-hide"
+                className="grid grid-rows-1 md:grid-rows-2 grid-flow-col auto-cols-[minmax(150px,1fr)] gap-6 overflow-x-auto scrollbar-hide"
               >
                 {[...programmingSkills, ...programmingSkills].map((skill, index) => (
                   <SkillCard key={`${skill.name}-${index}`} skill={skill} index={index} showLevel={true} isVisible={sectionsVisible.programming} />
@@ -390,8 +385,8 @@ export default function Skills() {
           <div className="relative">
             <div className="relative bg-white/5 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-white/10 shadow-xl overflow-hidden">
               <div 
-                ref={scrollContainerRefs.frameworks}
-                className="grid grid-rows-1 md:grid-rows-2 grid-flow-col auto-cols-[minmax(150px,1fr)] gap-6 overflow-x-auto pb-4 scrollbar-hide"
+                ref={scrollContainerRefs.programming}
+                className="grid grid-rows-1 md:grid-rows-2 grid-flow-col auto-cols-[minmax(150px,1fr)] gap-6 overflow-x-auto scrollbar-hide"
               >
                 {[...frameworksTools, ...frameworksTools].map((skill, index) => (
                   <SkillCard key={`${skill.name}-${index}`} skill={skill} index={index} showLevel={true} isVisible={sectionsVisible.frameworks} />
@@ -415,8 +410,8 @@ export default function Skills() {
           <div className="relative">
             <div className="relative bg-white/5 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-white/10 shadow-xl overflow-hidden">
               <div 
-                ref={scrollContainerRefs.hardware}
-                className="grid grid-rows-1 md:grid-rows-2 grid-flow-col auto-cols-[minmax(150px,1fr)] gap-6 overflow-x-auto pb-4 scrollbar-hide"
+                ref={scrollContainerRefs.programming}
+                className="grid grid-rows-1 md:grid-rows-2 grid-flow-col auto-cols-[minmax(150px,1fr)] gap-6 overflow-x-auto scrollbar-hide"
               >
                 {[...hardwareSkills, ...hardwareSkills].map((skill, index) => (
                   <SkillCard key={`${skill.name}-${index}`} skill={skill} index={index} showLevel={true} isVisible={sectionsVisible.hardware} />
