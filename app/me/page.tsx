@@ -478,9 +478,9 @@ export default function AboutMe() {
                 </a>
                 
                 <a href="https://www.linkedin.com/in/puntakant-roojang-4457192ab/" target="_blank" rel="noopener noreferrer" className="group/item flex items-center gap-6 p-6 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/30 transition-all duration-300 hover:scale-105">
-                  <div className="flex-shrink-0 w-14 h-14 rounded-full bg-gradient-to-br from-blue-400 to-cyan-400 flex items-center justify-center text-2xl shadow-lg">
-                    💼
-                  </div>
+                  <img
+                    src="https://static.vecteezy.com/system/resources/previews/023/986/608/non_2x/linkedin-logo-linkedin-logo-transparent-linkedin-icon-transparent-free-free-png.png"
+                    className="flex-shrink-0 w-14 h-14 rounded-full bg-gradient-to-br from-blue-400 to-cyan-400 flex items-center justify-center text-2xl shadow-lg" />
                   <div>
                     <p className="text-sm font-semibold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent mb-1">
                       LINKEDIN
@@ -492,9 +492,9 @@ export default function AboutMe() {
                 </a>
                 
                 <a href="https://github.com/Punbomz" target="_blank" rel="noopener noreferrer" className="group/item flex items-center gap-6 p-6 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/30 transition-all duration-300 hover:scale-105">
-                  <div className="flex-shrink-0 w-14 h-14 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center text-2xl shadow-lg">
-                    🐱
-                  </div>
+                  <img
+                    src = 'https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg'
+                    className="flex-shrink-0 w-14 h-14 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center text-2xl shadow-lg" />
                   <div>
                     <p className="text-sm font-semibold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-1">
                       GITHUB
