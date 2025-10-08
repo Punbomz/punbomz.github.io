@@ -385,7 +385,7 @@ export default function Skills() {
           <div className="relative">
             <div className="relative bg-white/5 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-white/10 shadow-xl overflow-hidden">
               <div 
-                ref={scrollContainerRefs.programming}
+                ref={scrollContainerRefs.frameworks}
                 className="grid grid-rows-1 md:grid-rows-2 grid-flow-col auto-cols-[minmax(150px,1fr)] gap-6 overflow-x-auto scrollbar-hide"
               >
                 {[...frameworksTools, ...frameworksTools].map((skill, index) => (
@@ -410,7 +410,7 @@ export default function Skills() {
           <div className="relative">
             <div className="relative bg-white/5 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-white/10 shadow-xl overflow-hidden">
               <div 
-                ref={scrollContainerRefs.programming}
+                ref={scrollContainerRefs.hardware}
                 className="grid grid-rows-1 md:grid-rows-2 grid-flow-col auto-cols-[minmax(150px,1fr)] gap-6 overflow-x-auto scrollbar-hide"
               >
                 {[...hardwareSkills, ...hardwareSkills].map((skill, index) => (
