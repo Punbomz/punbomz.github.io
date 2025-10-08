@@ -28,13 +28,6 @@ export default function AboutMe() {
     { icon: "📚", text: "Learning New Technologies", color: "from-teal-400 to-cyan-500" }
   ];
 
-  const skills = [
-    { name: "JavaScript/TypeScript", level: 90, color: "bg-yellow-400" },
-    { name: "React & Next.js", level: 85, color: "bg-cyan-400" },
-    { name: "Node.js", level: 80, color: "bg-green-400" },
-    { name: "Tailwind CSS", level: 95, color: "bg-blue-400" }
-  ];
-
   const strengths = [
     { icon: "⚡", text: "Fast Learner", bg: "from-yellow-500/20 to-orange-500/20" },
     { icon: "🤝", text: "Team Collaboration", bg: "from-blue-500/20 to-purple-500/20" },

@@ -17,29 +17,28 @@ async function fetchNotionDatabase(databaseId: string) {
   return data.results;
 }
 
-function parseFramwork(notionData: any[]) {
+function parseInterest(notionData: any[]) {
   return notionData.map(item => ({
     name: item.properties.Name?.title?.[0]?.plain_text || 'Untitled',
-    icon: item.properties.Icon?.rich_text?.[0]?.plain_text || '📦',
-    level: item.properties.Level?.select?.name || 'Beginner', 
-    color: item.properties.Color?.select?.name || 'from-pink-400 to-blue-500',
+    icon: item.properties.Icon?.rich_text?.[0]?.plain_text || '💻',
+    color: item.properties.Color?.select?.name || 'from-purple-400 to-blue-500',
   }));
 }
 
 export async function GET() {
   try {
-    if (!process.env.NOTION_TOKEN || !process.env.NOTION_FRAMEWORK_DB) {
+    if (!process.env.NOTION_TOKEN || !process.env.NOTION_INTERESTS_DB) {
       return NextResponse.json([]);
     }
 
-    const data = await fetchNotionDatabase(process.env.NOTION_FRAMEWORK_DB);
-    const framework = parseFramwork(data);
+    const data = await fetchNotionDatabase(process.env.NOTION_INTERESTS_DB);
+    const interest = parseInterest(data);
 
-    console.log("After", framework)
+    console.log("After", interest)
     
-    return NextResponse.json(framework);
+    return NextResponse.json(interest);
   } catch (error) {
-    console.error('Error fetching framework:', error);
+    console.error('Error fetching interest:', error);
     return NextResponse.json([]);
   }
 }

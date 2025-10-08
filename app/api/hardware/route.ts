@@ -22,7 +22,7 @@ function parseHardware(notionData: any[]) {
     name: item.properties.Name?.title?.[0]?.plain_text || 'Untitled',
     icon: item.properties.Icon?.rich_text?.[0]?.plain_text || '📦',
     level: item.properties.Level?.select?.name || 'Beginner', 
-    color: item.properties.Color?.select?.name || 'from-yellow-400 to-blue-500',
+    color: item.properties.Color?.select?.name || 'from-green-400 to-blue-500',
   }));
 }
 
