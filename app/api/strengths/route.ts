@@ -21,7 +21,7 @@ function parseStrength(notionData: any[]) {
   return notionData.map(item => ({
     name: item.properties.Name?.title?.[0]?.plain_text || 'Untitled',
     icon: item.properties.Icon?.rich_text?.[0]?.plain_text || '💪',
-    color: item.properties.Color?.select?.name || 'from-red-400 to-blue-500',
+    bg: item.properties.Color?.select?.name || 'from-red-400 to-blue-500',
   }));
 }
 

@@ -2,9 +2,70 @@
 
 import { useState, useEffect } from 'react';
 
+interface Interest {
+  name: string;
+  icon: string;
+  color: string;
+}
+
+interface Strength {
+  name: string;
+  icon: string;
+  bg: string;
+}
+
+interface Target {
+  name: string;
+  color: string;
+}
+
+// Loading skeleton for interests
+function InterestSkeleton() {
+  return (
+    <div className="relative animate-pulse">
+      <div className="bg-white/5 backdrop-blur-lg rounded-2xl p-6 border border-white/10">
+        <div className="w-12 h-12 bg-white/10 rounded-lg mb-3"></div>
+        <div className="h-4 bg-white/10 rounded w-3/4"></div>
+      </div>
+    </div>
+  );
+}
+
+// Loading skeleton for strengths
+function StrengthSkeleton() {
+  return (
+    <div className="relative animate-pulse">
+      <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-8 border border-white/20">
+        <div className="w-16 h-16 bg-white/10 rounded-xl mb-4"></div>
+        <div className="h-6 bg-white/10 rounded w-2/3"></div>
+      </div>
+    </div>
+  );
+}
+
+// Loading skeleton for targets
+function TargetSkeleton() {
+  return (
+    <div className="relative animate-pulse">
+      <div className="flex items-center gap-4 bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10">
+        <div className="flex-shrink-0 w-12 h-12 rounded-full bg-white/10"></div>
+        <div className="h-5 bg-white/10 rounded flex-1"></div>
+      </div>
+    </div>
+  );
+}
+
 export default function AboutMe() {
   const [scrollY, setScrollY] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
+
+  const [interestLoading, setInterestLoading] = useState(true);
+  const [strengthLoading, setStrengthLoading] = useState(true);
+  const [targetLoading, setTargetLoading] = useState(true);
+
+  const [interests, setInterest] = useState<Interest[]>([]);
+  const [strengths, setStrength] = useState<Strength[]>([]);
+  const [targets, setTarget] = useState<Target[]>([]);
 
   useEffect(() => {
     setIsVisible(true);
@@ -14,33 +75,55 @@ export default function AboutMe() {
     };
 
     window.addEventListener('scroll', handleScroll);
+
+    fetchData();
+
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const interests = [
-    { icon: "💻", text: "Coding & Programming", color: "from-cyan-400 to-blue-500" },
-    { icon: "🌐", text: "Web Development", color: "from-green-400 to-emerald-500" },
-    { icon: "🎮", text: "Game Development", color: "from-purple-400 to-pink-500" },
-    { icon: "🤖", text: "AI & Machine Learning", color: "from-orange-400 to-red-500" },
-    { icon: "🔒", text: "Cybersecurity", color: "from-red-400 to-rose-500" },
-    { icon: "☁️", text: "Cloud Computing", color: "from-blue-400 to-indigo-500" },
-    { icon: "🧩", text: "Problem Solving", color: "from-yellow-400 to-orange-500" },
-    { icon: "📚", text: "Learning New Technologies", color: "from-teal-400 to-cyan-500" }
-  ];
+  async function fetchData() {
+    try {
+      fetch('/api/interests')
+        .then(res => res.json())
+        .then(data => {
+          setInterest(data);
+          setInterestLoading(false);
+        })
+        .catch(err => {
+          console.error('Error fetching interest:', err);
+          setInterestLoading(false);
+        });
 
-  const strengths = [
-    { icon: "⚡", text: "Fast Learner", bg: "from-yellow-500/20 to-orange-500/20" },
-    { icon: "🤝", text: "Team Collaboration", bg: "from-blue-500/20 to-purple-500/20" },
-    { icon: "🎨", text: "Creative Thinking", bg: "from-pink-500/20 to-rose-500/20" },
-    { icon: "🎯", text: "Attention to Detail", bg: "from-green-500/20 to-teal-500/20" }
-  ];
+      fetch('/api/strengths')
+        .then(res => res.json())
+        .then(data => {
+          setStrength(data);
+          setStrengthLoading(false);
+        })
+        .catch(err => {
+          console.error('Error fetching framework:', err);
+          setStrengthLoading(false);
+        });
 
-  const targets = [
-    "Build Impactful Products",
-    "Become a Full-Stack Developer",
-    "Master System Design",
-    "Contribute to Open Source"
-  ];
+      fetch('/api/targets')
+        .then(res => res.json())
+        .then(data => {
+          setTarget(data);
+          setTargetLoading(false);
+        })
+        .catch(err => {
+          console.error('Error fetching hardware:', err);
+          setTargetLoading(false);
+        });
+
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setInterestLoading(false);
+      setStrengthLoading(false);
+      setTargetLoading(false);
+    }
+  }
+    
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
@@ -206,21 +289,33 @@ export default function AboutMe() {
           <h2 className="text-5xl md:text-6xl font-black text-center mb-12 bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
             💡 Interests
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {interests.map((interest, index) => (
-              <div 
-                key={index}
-                className="group relative bg-white/5 backdrop-blur-lg rounded-2xl p-6 border border-white/10 hover:border-white/30 transition-all duration-300 hover:scale-105 hover:bg-white/10"
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-10 rounded-2xl transition-opacity" style={{ background: `linear-gradient(to bottom right, var(--tw-gradient-stops))` }}></div>
-                <div className="text-4xl mb-3">{interest.icon}</div>
-                <p className={`text-sm md:text-base font-semibold bg-gradient-to-r ${interest.color} bg-clip-text text-transparent`}>
-                  {interest.text}
-                </p>
-              </div>
-            ))}
-          </div>
+          {interestLoading ? (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {[...Array(8)].map((_, i) => (
+                <InterestSkeleton key={i} />
+              ))}
+            </div>
+          ) : interests.length > 0 ? (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {interests.map((interest, index) => (
+                <div 
+                  key={index}
+                  className="group relative bg-white/5 backdrop-blur-lg rounded-2xl p-6 border border-white/10 hover:border-white/30 transition-all duration-300 hover:scale-105 hover:bg-white/10"
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-10 rounded-2xl transition-opacity" style={{ background: `linear-gradient(to bottom right, var(--tw-gradient-stops))` }}></div>
+                  <div className="text-4xl mb-3">{interest.icon}</div>
+                  <p className={`text-sm md:text-base font-semibold bg-gradient-to-r ${interest.color} bg-clip-text text-transparent`}>
+                    {interest.name}
+                  </p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center text-white/60 py-12">
+              No interests found
+            </div>
+          )}
         </div>
 
         {/* Strengths - Card Layout */}
@@ -232,22 +327,34 @@ export default function AboutMe() {
           <h2 className="text-5xl md:text-6xl font-black text-center mb-12 bg-gradient-to-r from-pink-400 to-orange-400 bg-clip-text text-transparent">
             💪 Strengths
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            {strengths.map((strength, index) => (
-              <div 
-                key={index}
-                className="group relative"
-              >
-                <div className={`absolute inset-0 bg-gradient-to-br ${strength.bg} rounded-2xl blur-xl opacity-50 group-hover:opacity-70 transition-opacity`}></div>
-                <div className="relative bg-white/5 backdrop-blur-xl rounded-2xl p-8 border border-white/20 hover:border-white/40 transition-all duration-300 hover:scale-105">
-                  <div className="text-5xl mb-4">{strength.icon}</div>
-                  <h3 className="text-2xl font-bold bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
-                    {strength.text}
-                  </h3>
+          {strengthLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+              {[...Array(4)].map((_, i) => (
+                <StrengthSkeleton key={i} />
+              ))}
+            </div>
+          ) : strengths.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+              {strengths.map((strength, index) => (
+                <div 
+                  key={index}
+                  className="group relative"
+                >
+                  <div className={`absolute inset-0 bg-gradient-to-br ${strength.bg} rounded-2xl blur-xl opacity-50 group-hover:opacity-70 transition-opacity`}></div>
+                  <div className="relative bg-white/5 backdrop-blur-xl rounded-2xl p-8 border border-white/20 hover:border-white/40 transition-all duration-300 hover:scale-105">
+                    <div className="text-5xl mb-4">{strength.icon}</div>
+                    <h3 className="text-2xl font-bold bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
+                      {strength.name}
+                    </h3>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center text-white/60 py-12">
+              No strengths found
+            </div>
+          )}
         </div>
 
         {/* Targets - Creative Layout */}
@@ -259,24 +366,36 @@ export default function AboutMe() {
           <h2 className="text-5xl md:text-6xl font-black text-center mb-12 bg-gradient-to-r from-green-400 to-cyan-400 bg-clip-text text-transparent">
             🎯 Targets
           </h2>
-          <div className="max-w-3xl mx-auto space-y-4">
-            {targets.map((target, index) => (
-              <div 
-                key={index}
-                className="group relative"
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-2xl blur-xl opacity-0 group-hover:opacity-30 transition-opacity"></div>
-                <div className="relative flex items-center gap-4 bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10 hover:border-white/30 transition-all duration-300 hover:scale-102">
-                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-cyan-400 to-purple-400 flex items-center justify-center text-xl font-black text-white shadow-lg">
-                    {index + 1}
+          {targetLoading ? (
+            <div className="max-w-3xl mx-auto space-y-4">
+              {[...Array(5)].map((_, i) => (
+                <TargetSkeleton key={i} />
+              ))}
+            </div>
+          ) : targets.length > 0 ? (
+            <div className="max-w-3xl mx-auto space-y-4">
+              {targets.map((target, index) => (
+                <div 
+                  key={index}
+                  className="group relative"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-2xl blur-xl opacity-0 group-hover:opacity-30 transition-opacity"></div>
+                  <div className="relative flex items-center gap-4 bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10 hover:border-white/30 transition-all duration-300 hover:scale-102">
+                    <div className="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-cyan-400 to-purple-400 flex items-center justify-center text-xl font-black text-white shadow-lg">
+                      {index + 1}
+                    </div>
+                    <p className="text-xl font-semibold bg-gradient-to-r from-white via-cyan-200 to-white bg-clip-text text-transparent">
+                      {target.name}
+                    </p>
                   </div>
-                  <p className="text-xl font-semibold bg-gradient-to-r from-white via-cyan-200 to-white bg-clip-text text-transparent">
-                    {target}
-                  </p>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center text-white/60 py-12">
+              No targets found
+            </div>
+          )}
         </div>
 
         {/* Education Timeline */}
