@@ -24,10 +24,6 @@ export default function Skills() {
   useEffect(() => {
     setIsVisible(true);
 
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-    };
-
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
