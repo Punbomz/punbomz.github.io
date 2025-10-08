@@ -29,17 +29,51 @@ interface Achievement {
   link: string;
 }
 
-interface PortfolioClientProps {
-  projects: Project[];
-  experiences: Experience[];
-  achievements?: Achievement[];
+// Loading skeleton component
+function LoadingSkeleton({ type = 'project' }: { type?: 'project' | 'experience' | 'achievement' }) {
+  return (
+    <div className="relative animate-pulse">
+      <div className="relative bg-white/5 backdrop-blur-xl rounded-3xl p-8 md:p-10 border border-white/20">
+        <div className="flex flex-col md:flex-row items-start gap-6">
+          {/* Icon skeleton */}
+          <div className="flex-shrink-0">
+            <div className="w-20 h-20 bg-white/10 rounded-2xl"></div>
+          </div>
+          
+          {/* Content skeleton */}
+          <div className="flex-1 w-full">
+            <div className="h-8 bg-white/10 rounded-lg w-3/4 mb-3"></div>
+            <div className="h-6 bg-white/10 rounded-lg w-1/2 mb-4"></div>
+            <div className="space-y-2 mb-4">
+              <div className="h-4 bg-white/10 rounded w-full"></div>
+              <div className="h-4 bg-white/10 rounded w-5/6"></div>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <div className="h-8 w-20 bg-white/10 rounded-full"></div>
+              <div className="h-8 w-24 bg-white/10 rounded-full"></div>
+              <div className="h-8 w-16 bg-white/10 rounded-full"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 
-export default function PortfolioClient({ projects, experiences, achievements = [] }: PortfolioClientProps) {
+export default function PortfolioClient() {
   const [scrollY, setScrollY] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const hasAnimated = useRef(false);
+  
+  // Separate loading states for each section
+  const [projectsLoading, setProjectsLoading] = useState(true);
+  const [experiencesLoading, setExperiencesLoading] = useState(true);
+  const [achievementsLoading, setAchievementsLoading] = useState(true);
+  
+  // Data states
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [experiences, setExperiences] = useState<Experience[]>([]);
+  const [achievements, setAchievements] = useState<Achievement[]>([]);
 
   useEffect(() => {
     setIsVisible(true);
@@ -51,10 +85,58 @@ export default function PortfolioClient({ projects, experiences, achievements = 
 
     window.addEventListener('scroll', handleScroll);
     
+    // Fetch data from API
+    fetchData();
+    
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+
+  async function fetchData() {
+    try {
+      // Fetch projects
+      fetch('/api/projects')
+        .then(res => res.json())
+        .then(data => {
+          setProjects(data);
+          setProjectsLoading(false);
+        })
+        .catch(err => {
+          console.error('Error fetching projects:', err);
+          setProjectsLoading(false);
+        });
+
+      // Fetch experiences
+      fetch('/api/experiences')
+        .then(res => res.json())
+        .then(data => {
+          setExperiences(data);
+          setExperiencesLoading(false);
+        })
+        .catch(err => {
+          console.error('Error fetching experiences:', err);
+          setExperiencesLoading(false);
+        });
+
+      // Fetch achievements
+      fetch('/api/achievements')
+        .then(res => res.json())
+        .then(data => {
+          setAchievements(data);
+          setAchievementsLoading(false);
+        })
+        .catch(err => {
+          console.error('Error fetching achievements:', err);
+          setAchievementsLoading(false);
+        });
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setProjectsLoading(false);
+      setExperiencesLoading(false);
+      setAchievementsLoading(false);
+    }
+  }
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 pb-24">
@@ -64,13 +146,6 @@ export default function PortfolioClient({ projects, experiences, achievements = 
           25% { transform: translate(30px, -30px) rotate(90deg); }
           50% { transform: translate(-20px, 20px) rotate(180deg); }
           75% { transform: translate(40px, 10px) rotate(270deg); }
-        }
-        
-        @keyframes float-particle {
-          0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
-          10% { opacity: 0.3; }
-          90% { opacity: 0.3; }
-          50% { transform: translateY(-100vh) translateX(50px); }
         }
         
         @keyframes shimmer {
@@ -88,22 +163,8 @@ export default function PortfolioClient({ projects, experiences, achievements = 
           50% { width: 16rem; }
         }
         
-        @keyframes pulse-glow {
-          0%, 100% { opacity: 0.2; }
-          50% { opacity: 0.4; }
-        }
-        
-        @keyframes bounce-subtle {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-5px); }
-        }
-        
         .animate-float {
           animation: float linear infinite;
-        }
-        
-        .animate-float-particle {
-          animation: float-particle linear infinite;
         }
         
         .animate-gradient-x {
@@ -118,7 +179,6 @@ export default function PortfolioClient({ projects, experiences, achievements = 
 
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-
         {/* Animated Grid Pattern */}
         <div 
           className="absolute inset-0 opacity-10"
@@ -170,71 +230,73 @@ export default function PortfolioClient({ projects, experiences, achievements = 
             🚀 Featured Projects
           </h2>
           <div className="space-y-8">
-            {projects.map((project, index) => (
-              <div
-                key={project.name}
-                className={`group relative transition-all duration-500 hover:scale-[1.02] ${
-                  hasAnimated.current ? 'opacity-100' : 'animate-fade-in'
-                }`}
-                style={!hasAnimated.current ? {
-                  animationDelay: `${index * 0.15}s`,
-                } : undefined}
-              >
-                <div className="relative">
-                  <div className={`absolute inset-0 bg-gradient-to-br ${project.color} rounded-3xl blur-2xl opacity-0 group-hover:opacity-30 transition-all duration-300`}></div>
-                  
-                  <div className="relative bg-white/5 backdrop-blur-xl rounded-3xl p-8 md:p-10 border border-white/20 group-hover:border-white/40 shadow-2xl transition-all duration-300">
-                    <div className="flex flex-col md:flex-row items-start gap-6">
-                      {/* Icon */}
-                      <div className="flex-shrink-0">
-                        <div className="relative">
-                          <div className={`absolute inset-0 bg-gradient-to-br ${project.color} rounded-2xl blur-lg opacity-50`}></div>
-                          <div className={`relative w-20 h-20 bg-gradient-to-br ${project.color} rounded-2xl flex items-center justify-center text-4xl shadow-xl group-hover:scale-110 transition-transform duration-300`}>
-                            {project.icon}
+            {projectsLoading ? (
+              <>
+                <LoadingSkeleton type="project" />
+                <LoadingSkeleton type="project" />
+              </>
+            ) : projects.length > 0 ? (
+              projects.map((project, index) => (
+                <div
+                  key={project.name}
+                  className="group relative transition-all duration-500 hover:scale-[1.02]"
+                >
+                  <div className="relative">
+                    <div className={`absolute inset-0 bg-gradient-to-br ${project.color} rounded-3xl blur-2xl opacity-0 group-hover:opacity-30 transition-all duration-300`}></div>
+                    
+                    <div className="relative bg-white/5 backdrop-blur-xl rounded-3xl p-8 md:p-10 border border-white/20 group-hover:border-white/40 shadow-2xl transition-all duration-300">
+                      <div className="flex flex-col md:flex-row items-start gap-6">
+                        <div className="flex-shrink-0">
+                          <div className="relative">
+                            <div className={`absolute inset-0 bg-gradient-to-br ${project.color} rounded-2xl blur-lg opacity-50`}></div>
+                            <div className={`relative w-20 h-20 bg-gradient-to-br ${project.color} rounded-2xl flex items-center justify-center text-4xl shadow-xl group-hover:scale-110 transition-transform duration-300`}>
+                              {project.icon}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      
-                      {/* Content */}
-                      <div className="flex-1">
-                        <h3 className={`text-3xl md:text-4xl font-black mb-3 bg-gradient-to-r ${project.color} bg-clip-text text-transparent`}>
-                          {project.name}
-                        </h3>
-                        <p className="text-white/80 text-base md:text-lg mb-4 leading-relaxed">
-                          {project.details}
-                        </p>
                         
-                        {/* Achievements */}
-                        {project.achievements.length > 0 && (
-                          <div className="mb-4 grid grid-cols-1 sm:grid-cols-3 gap-2">
-                            {project.achievements.map((achievement) => (
-                              <div key={achievement} className="flex items-center gap-2">
-                                <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${project.color}`}></div>
-                                <span className="text-white/70 text-sm">{achievement}</span>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                        
-                        {/* Tags */}
-                        {project.tags.length > 0 && (
-                          <div className="flex flex-wrap gap-2">
-                            {project.tags.map((tag) => (
-                              <span
-                                key={tag}
-                                className="px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-white text-sm font-semibold border border-white/20 hover:bg-white/20 transition-colors"
-                              >
-                                {tag}
-                              </span>
-                            ))}
-                          </div>
-                        )}
+                        <div className="flex-1">
+                          <h3 className={`text-3xl md:text-4xl font-black mb-3 bg-gradient-to-r ${project.color} bg-clip-text text-transparent`}>
+                            {project.name}
+                          </h3>
+                          <p className="text-white/80 text-base md:text-lg mb-4 leading-relaxed">
+                            {project.details}
+                          </p>
+                          
+                          {project.achievements.length > 0 && (
+                            <div className="mb-4 grid grid-cols-1 sm:grid-cols-3 gap-2">
+                              {project.achievements.map((achievement) => (
+                                <div key={achievement} className="flex items-center gap-2">
+                                  <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${project.color}`}></div>
+                                  <span className="text-white/70 text-sm">{achievement}</span>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                          
+                          {project.tags.length > 0 && (
+                            <div className="flex flex-wrap gap-2">
+                              {project.tags.map((tag) => (
+                                <span
+                                  key={tag}
+                                  className="px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-white text-sm font-semibold border border-white/20 hover:bg-white/20 transition-colors"
+                                >
+                                  {tag}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
+              ))
+            ) : (
+              <div className="text-center text-white/60 py-12">
+                No projects found
               </div>
-            ))}
+            )}
           </div>
         </div>
 
@@ -248,108 +310,116 @@ export default function PortfolioClient({ projects, experiences, achievements = 
             💼 Work Experience
           </h2>
           <div className="relative">
-            {/* Timeline Line */}
             <div className="absolute left-4 md:left-10 top-0 bottom-0 w-1 bg-gradient-to-b from-cyan-400 via-purple-400 to-pink-400 rounded-full hidden md:block"></div>
             
             <div className="space-y-8">
-              {experiences.map((experience, index) => (
-                <div
-                  key={experience.title}
-                  className={`group relative transition-all duration-500 ${
-                    hasAnimated.current ? 'opacity-100' : 'animate-fade-in'
-                  }`}
-                  style={!hasAnimated.current ? {
-                    animationDelay: `${0.5 + index * 0.15}s`,
-                  } : undefined}
-                >
-                  <div className="relative md:ml-24">
-                    {/* Timeline Dot */}
-                    <div className="absolute -left-[4.5rem] top-10 hidden md:block">
-                      <div className="relative">
-                        <div className={`absolute inset-0 bg-gradient-to-br ${experience.color} rounded-full blur-lg opacity-70 animate-pulse`}></div>
-                        <div className={`relative w-8 h-8 bg-gradient-to-br ${experience.color} rounded-full border-4 border-slate-900 shadow-xl group-hover:scale-125 transition-transform duration-300`}></div>
+              {experiencesLoading ? (
+                <>
+                  <div className="md:ml-24">
+                    <LoadingSkeleton type="experience" />
+                  </div>
+                  <div className="md:ml-24">
+                    <LoadingSkeleton type="experience" />
+                  </div>
+                </>
+              ) : experiences.length > 0 ? (
+                experiences.map((experience, index) => (
+                  <div
+                    key={experience.title}
+                    className="group relative transition-all duration-500"
+                  >
+                    <div className="relative md:ml-24">
+                      <div className="absolute -left-[4.5rem] top-10 hidden md:block">
+                        <div className="relative">
+                          <div className={`absolute inset-0 bg-gradient-to-br ${experience.color} rounded-full blur-lg opacity-70 animate-pulse`}></div>
+                          <div className={`relative w-8 h-8 bg-gradient-to-br ${experience.color} rounded-full border-4 border-slate-900 shadow-xl group-hover:scale-125 transition-transform duration-300`}></div>
+                        </div>
                       </div>
-                    </div>
 
-                    <div className="relative hover:scale-[1.02] transition-all duration-300">
-                      <div className={`absolute inset-0 bg-gradient-to-br ${experience.color} rounded-3xl blur-2xl opacity-0 group-hover:opacity-30 transition-all duration-300`}></div>
-                      
-                      <div className="relative bg-white/5 backdrop-blur-xl rounded-3xl p-8 md:p-10 border border-white/20 group-hover:border-white/40 shadow-2xl transition-all duration-300">
-                        <div className="flex flex-col md:flex-row items-start gap-6">
-                          {/* Icon */}
-                          <div className="flex-shrink-0">
-                            <div className="relative">
-                              <div className={`absolute inset-0 bg-gradient-to-br ${experience.color} rounded-2xl blur-lg opacity-50`}></div>
-                              <div className={`relative w-20 h-20 bg-gradient-to-br ${experience.color} rounded-2xl flex items-center justify-center text-4xl shadow-xl group-hover:scale-110 transition-transform duration-300`}>
-                                {experience.icon}
+                      <div className="relative hover:scale-[1.02] transition-all duration-300">
+                        <div className={`absolute inset-0 bg-gradient-to-br ${experience.color} rounded-3xl blur-2xl opacity-0 group-hover:opacity-30 transition-all duration-300`}></div>
+                        
+                        <div className="relative bg-white/5 backdrop-blur-xl rounded-3xl p-8 md:p-10 border border-white/20 group-hover:border-white/40 shadow-2xl transition-all duration-300">
+                          <div className="flex flex-col md:flex-row items-start gap-6">
+                            <div className="flex-shrink-0">
+                              <div className="relative">
+                                <div className={`absolute inset-0 bg-gradient-to-br ${experience.color} rounded-2xl blur-lg opacity-50`}></div>
+                                <div className={`relative w-20 h-20 bg-gradient-to-br ${experience.color} rounded-2xl flex items-center justify-center text-4xl shadow-xl group-hover:scale-110 transition-transform duration-300`}>
+                                  {experience.icon}
+                                </div>
                               </div>
                             </div>
-                          </div>
-                          
-                          {/* Content */}
-                          <div className="flex-1">
-                            <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-3 gap-2">
-                              <h3 className={`text-3xl md:text-4xl font-black bg-gradient-to-r ${experience.color} bg-clip-text text-transparent`}>
-                                {experience.title}
-                              </h3>
-                              <span className={`px-4 py-1.5 bg-gradient-to-r ${experience.color} rounded-full text-white text-sm font-bold shadow-lg flex-shrink-0 w-fit`}>
-                                {experience.period}
-                              </span>
-                            </div>
-                            <p className="text-white text-xl font-bold mb-3">
-                              {experience.company}
-                            </p>
-                            <p className="text-white/80 text-base md:text-lg mb-4 leading-relaxed">
-                              {experience.details}
-                            </p>
                             
-                            {/* Highlights */}
-                            {experience.highlights.length > 0 && (
-                              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                                {experience.highlights.map((highlight) => (
-                                  <div key={highlight} className="flex items-center gap-2">
-                                    <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${experience.color}`}></div>
-                                    <span className="text-white/70 text-sm">{highlight}</span>
-                                  </div>
-                                ))}
+                            <div className="flex-1">
+                              <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-3 gap-2">
+                                <h3 className={`text-3xl md:text-4xl font-black bg-gradient-to-r ${experience.color} bg-clip-text text-transparent`}>
+                                  {experience.title}
+                                </h3>
+                                <span className={`px-4 py-1.5 bg-gradient-to-r ${experience.color} rounded-full text-white text-sm font-bold shadow-lg flex-shrink-0 w-fit`}>
+                                  {experience.period}
+                                </span>
                               </div>
-                            )}
+                              <p className="text-white text-xl font-bold mb-3">
+                                {experience.company}
+                              </p>
+                              <p className="text-white/80 text-base md:text-lg mb-4 leading-relaxed">
+                                {experience.details}
+                              </p>
+                              
+                              {experience.highlights.length > 0 && (
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                                  {experience.highlights.map((highlight) => (
+                                    <div key={highlight} className="flex items-center gap-2">
+                                      <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${experience.color}`}></div>
+                                      <span className="text-white/70 text-sm">{highlight}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
+                ))
+              ) : (
+                <div className="text-center text-white/60 py-12 md:ml-24">
+                  No experiences found
                 </div>
-              ))}
+              )}
             </div>
           </div>
         </div>
 
         {/* Achievements Section */}
-        {achievements && achievements.length > 0 && (
-          <div 
-            className={`mb-20 transition-all duration-1000 delay-700 ${
-              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-            }`}
-          >
-            <h2 className="text-5xl md:text-6xl font-black mb-10 bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
-              🏆 Achievements
-            </h2>
+        <div 
+          className={`mb-20 transition-all duration-1000 delay-700 ${
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          }`}
+        >
+          <h2 className="text-5xl md:text-6xl font-black mb-10 bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
+            🏆 Achievements
+          </h2>
+          
+          <div className="relative group">
+            <div className="absolute inset-0 bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 rounded-3xl blur-2xl opacity-20 transition-all duration-300"></div>
             
-            <div className="relative group">
-              <div className="absolute inset-0 bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 rounded-3xl blur-2xl opacity-20 transition-all duration-300"></div>
-              
-              <div className="relative bg-white/5 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-2xl">
-                {/* Scrollable Container */}
-                <div className="max-h-[600px] overflow-y-auto pr-4 space-y-4 custom-scrollbar">
-                  {achievements.map((achievement, index) => (
+            <div className="relative bg-white/5 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-2xl">
+              <div className="max-h-[600px] overflow-y-auto pr-4 space-y-4 custom-scrollbar">
+                {achievementsLoading ? (
+                  <>
+                    <LoadingSkeleton type="achievement" />
+                    <LoadingSkeleton type="achievement" />
+                  </>
+                ) : achievements.length > 0 ? (
+                  achievements.map((achievement) => (
                     <div
                       key={achievement.name}
                       className="group/item relative"
                     >
                       <div className="relative bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 transition-all duration-300 hover:bg-gradient-to-r hover:from-yellow-500/20 hover:to-orange-500/20 hover:border-yellow-400/40 hover:shadow-lg hover:shadow-yellow-500/20">
                         <div className="flex items-start gap-6">
-                          {/* Icon & Year */}
                           <div className="flex-shrink-0 flex flex-col items-center gap-2">
                             <div className="relative">
                               <div className="absolute inset-0 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl blur-md opacity-50"></div>
@@ -362,7 +432,6 @@ export default function PortfolioClient({ projects, experiences, achievements = 
                             </span>
                           </div>
                           
-                          {/* Content */}
                           <div className="flex-1 min-w-0">
                             <div className="flex items-start justify-between gap-3">
                               <h3 className="text-2xl md:text-3xl font-black bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
@@ -389,12 +458,16 @@ export default function PortfolioClient({ projects, experiences, achievements = 
                         </div>
                       </div>
                     </div>
-                  ))}
-                </div>
+                  ))
+                ) : (
+                  <div className="text-center text-white/60 py-12">
+                    No achievements found
+                  </div>
+                )}
               </div>
             </div>
           </div>
-        )}
+        </div>
 
         {/* Call to Action */}
         <div 
@@ -425,29 +498,8 @@ export default function PortfolioClient({ projects, experiences, achievements = 
         </div>
       </main>
 
-      {/* Custom animations styles */}
+      {/* Custom scrollbar styles */}
       <style jsx>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        
-        .animate-fade-in {
-          animation: fadeInUp 0.6s ease-out both;
-          animation-play-state: running;
-        }
-        
-        .animate-fade-in:hover {
-          animation-play-state: paused;
-        }
-
-        /* Custom Scrollbar */
         .custom-scrollbar::-webkit-scrollbar {
           width: 8px;
         }
@@ -468,7 +520,6 @@ export default function PortfolioClient({ projects, experiences, achievements = 
           box-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
         }
 
-        /* For Firefox */
         .custom-scrollbar {
           scrollbar-width: thin;
           scrollbar-color: #f97316 rgba(255, 255, 255, 0.05);
