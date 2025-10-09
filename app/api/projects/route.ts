@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import { RichTextItemResponse } from '@notionhq/client/build/src/api-endpoints';
 
 async function fetchNotionDatabase(databaseId: string) {
   const response = await fetch(`https://api.notion.com/v1/databases/${databaseId}/query`, {
@@ -22,7 +21,7 @@ function parseProjects(notionData: any[]) {
   return notionData.map(item => ({
     name: item.properties.Name?.title?.[0]?.plain_text || 'Untitled',
     details: item.properties.Details?.rich_text
-      ?.map((t: RichTextItemResponse) => t.plain_text)
+      ?.map((t: { plain_text: string }) => t.plain_text)
       .join('') || '',
     icon: item.properties.Icon?.rich_text?.[0]?.plain_text || '📦',
     tags: item.properties.Tags?.multi_select?.map((tag: any) => tag.name) || [],
