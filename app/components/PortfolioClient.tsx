@@ -244,9 +244,19 @@ export default function PortfolioClient() {
                         </div>
                         
                         <div className="flex-1">
-                          <h3 className={`text-3xl md:text-4xl font-black mb-3 bg-gradient-to-r ${project.color} bg-clip-text text-transparent`}>
-                            {project.name}
-                          </h3>
+                          <div className="flex items-start justify-between gap-3">
+                            <h3 className={`text-3xl md:text-4xl font-black mb-3 bg-gradient-to-r ${project.color} bg-clip-text text-transparent`}>
+                              {project.name}
+                            </h3>
+                            {project.link && (
+                            <a
+                              href={project.link.startsWith('http') ? achievement.link : `https://${achievement.link}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center text-slate-900 hover:scale-110 hover:rotate-12 transition-all duration-300 shadow-lg hover:shadow-yellow-500/50"
+                              title="View Project"
+                            >
+                          </div>
                           <p className="text-white/80 text-base md:text-lg mb-4 leading-relaxed">
                             {project.details}
                           </p>
