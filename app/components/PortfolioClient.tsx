@@ -9,6 +9,7 @@ interface Project {
   tags: string[];
   color: string;
   achievements: string[];
+  link: string;
 }
 
 interface Experience {
