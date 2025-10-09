@@ -28,7 +28,8 @@ function parseProjects(notionData: any[]) {
     color: item.properties.Color?.select?.name || 'from-blue-500 to-cyan-500',
     achievements: item.properties.Achievements?.rich_text?.[0]?.plain_text
       ? item.properties.Achievements.rich_text[0].plain_text.split(',').map((a: string) => a.trim())
-      : []
+      : [],
+    link: item.properties.Link?.url || ''
   }));
 }
 
