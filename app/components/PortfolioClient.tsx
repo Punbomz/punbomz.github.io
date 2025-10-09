@@ -250,7 +250,7 @@ export default function PortfolioClient() {
                             </h3>
                             {project.link && (
                             <a
-                              href={project.link.startsWith('http') ? achievement.link : `https://${achievement.link}`}
+                              href={project.link.startsWith('http') ? project.link : `https://${project.link}`}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center text-slate-900 hover:scale-110 hover:rotate-12 transition-all duration-300 shadow-lg hover:shadow-yellow-500/50"
