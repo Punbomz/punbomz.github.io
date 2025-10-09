@@ -243,7 +243,7 @@ export default function PortfolioClient() {
                           </div>
                         </div>
                         
-                        <div className="flex-1">
+                        <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between gap-3">
                             <h3 className={`text-3xl md:text-4xl font-black mb-3 bg-gradient-to-r ${project.color} bg-clip-text text-transparent`}>
                               {project.name}
