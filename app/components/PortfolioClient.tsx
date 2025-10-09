@@ -256,6 +256,10 @@ export default function PortfolioClient() {
                               className="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center text-slate-900 hover:scale-110 hover:rotate-12 transition-all duration-300 shadow-lg hover:shadow-yellow-500/50"
                               title="View Project"
                             >
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                 </svg>
+                            </a>
                           </div>
                           <p className="text-white/80 text-base md:text-lg mb-4 leading-relaxed">
                             {project.details}
