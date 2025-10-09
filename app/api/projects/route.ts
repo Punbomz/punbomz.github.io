@@ -20,7 +20,10 @@ async function fetchNotionDatabase(databaseId: string) {
 function parseProjects(notionData: any[]) {
   return notionData.map(item => ({
     name: item.properties.Name?.title?.[0]?.plain_text || 'Untitled',
-    details: item.properties.Details?.rich_text?.map(t => t.plain_text).join('') || '',
+    import { RichTextItemResponse } from '@notionhq/client/build/src/api-endpoints';
+    details: item.properties.Details?.rich_text
+      ?.map((t: RichTextItemResponse) => t.plain_text)
+      .join('') || '',
     icon: item.properties.Icon?.rich_text?.[0]?.plain_text || '📦',
     tags: item.properties.Tags?.multi_select?.map((tag: any) => tag.name) || [],
     color: item.properties.Color?.select?.name || 'from-blue-500 to-cyan-500',
