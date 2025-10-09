@@ -22,7 +22,7 @@ function parseAchievements(notionData: any[]) {
     name: item.properties.Name?.title?.[0]?.plain_text || 'Untitled',
     icon: item.properties.Icon?.rich_text?.[0]?.plain_text || '🏆',
     details: item.properties.Details?.rich_text?.[0]?.plain_text || '',
-    year: item.properties.Year?.rich_text?.[0]?.plain_text || '',
+    year: item.properties.Year?.number || '',
     link: item.properties.Link?.url || ''
   }));
 }
