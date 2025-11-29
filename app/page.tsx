@@ -227,7 +227,9 @@ export default function Home() {
         </div>
 
         {/* Download Resume Button */}
-        <div className="flex justify-center mt-8">
+        <div className={`flex justify-center mt-8 transition-all duration-1000 delay-1100 ${
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          }`}>
           <button
             onClick={handleDownload}
             disabled={isDownloading}
@@ -263,7 +265,7 @@ export default function Home() {
               ) : (
                 <>
                   <svg 
-                    className="w-5 h-5 text-slate-900 group-hover/download:text-white group-hover/download:animate-bounce transition-colors duration-300 text-lg" 
+                    className="w-5 h-5 text-white-900 group-hover/download:text-black group-hover/download:animate-bounce transition-colors duration-300 text-lg" 
                     fill="none" 
                     stroke="currentColor" 
                     viewBox="0 0 24 24"
@@ -275,7 +277,7 @@ export default function Home() {
                       d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" 
                     />
                   </svg>
-                  <span className="text-slate-900 font-bold group-hover/download:text-white transition-colors duration-300 text-lg">
+                  <span className="text-white-900 font-bold group-hover/download:text-black transition-colors duration-300 text-lg">
                     Download Resume
                   </span>
                 </>
