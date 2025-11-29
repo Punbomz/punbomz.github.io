@@ -53,17 +53,6 @@ function SkillCardSkeleton() {
   );
 }
 
-// Loading skeleton for scrolling sections
-function ScrollingSectionSkeleton() {
-  return (
-    <div className="grid grid-rows-1 md:grid-rows-2 grid-flow-col auto-cols-[minmax(150px,1fr)] gap-6 overflow-x-auto scrollbar-hide">
-      {[...Array(8)].map((_, i) => (
-        <SkillCardSkeleton key={i} />
-      ))}
-    </div>
-  );
-}
-
 // Loading skeleton for concept cards
 function ConceptCardSkeleton() {
   return (
@@ -130,54 +119,6 @@ export default function Skills() {
     concepts: useRef<HTMLDivElement>(null),
     soft: useRef<HTMLDivElement>(null)
   };
-
-  const scrollContainerRefs = {
-    programming: useRef<HTMLDivElement>(null),
-    frameworks: useRef<HTMLDivElement>(null),
-    hardware: useRef<HTMLDivElement>(null)
-  };
-
-  useEffect(() => {
-    const scrollSections = [
-      scrollContainerRefs.programming.current,
-      scrollContainerRefs.frameworks.current,
-      scrollContainerRefs.hardware.current
-    ];
-
-    const animationFrameIds: number[] = [];
-
-    scrollSections.forEach((section) => {
-      if (!section) return;
-      
-      let scrollPosition = 0;
-      const scrollSpeed = 0.5;
-
-      const scroll = () => {
-        if (section) {
-          scrollPosition += scrollSpeed;
-          section.scrollLeft = scrollPosition;
-          
-          const singleSetWidth = section.scrollWidth / 2;
-          
-          if (scrollPosition >= singleSetWidth) {
-            scrollPosition = 0;
-            section.scrollLeft = 0;
-          }
-        }
-        const id = requestAnimationFrame(scroll);
-        animationFrameIds.push(id);
-      };
-
-      const id = requestAnimationFrame(scroll);
-      animationFrameIds.push(id);
-    });
-
-    return () => {
-      animationFrameIds.forEach(id => {
-        cancelAnimationFrame(id);
-      });
-    };
-  }, [programmingLoading, frameworkLoading, hardwareLoading]);
 
   useEffect(() => {
     setIsVisible(true);
@@ -311,7 +252,7 @@ export default function Skills() {
 
   const SkillCard = ({ skill, index, showLevel = false, isVisible }: SkillCardProps) => (
     <div
-      className={`relative transition-all duration-500 ${
+      className={`group/skill relative transition-all duration-500 hover:scale-110 hover:-rotate-2 ${
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
       }`}
       style={{
@@ -319,21 +260,30 @@ export default function Skills() {
       }}
     >
       <div className="relative h-full">
-        <div className="relative bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-white/10 shadow-lg transition-all duration-300 flex flex-col items-center justify-center gap-3 h-full">
+        {/* Glow effect on hover */}
+        <div className={`absolute inset-0 bg-gradient-to-r ${skill.color || 'from-purple-400 to-pink-400'} rounded-2xl blur-xl opacity-0 group-hover/skill:opacity-40 transition-all duration-300 group-hover/skill:scale-110`}></div>
+        
+        <div className="relative bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-white/10 shadow-lg group-hover/skill:bg-white/10 group-hover/skill:border-white/30 group-hover/skill:shadow-2xl transition-all duration-300 flex flex-col items-center justify-center gap-3 h-full">
           <div className="relative">
             {skill.icon.startsWith('http') ? (
-              <img src={skill.icon} alt={skill.name} className="w-16 h-16 object-contain relative z-10 transition-transform duration-300" />
+              <img 
+                src={skill.icon} 
+                alt={skill.name} 
+                className="w-16 h-16 object-contain relative z-10 group-hover/skill:scale-125 group-hover/skill:rotate-12 transition-transform duration-300" 
+              />
             ) : (
-              <span className="text-5xl transition-transform duration-300 inline-block">{skill.icon}</span>
+              <span className="text-5xl group-hover/skill:scale-125 group-hover/skill:rotate-12 transition-transform duration-300 inline-block">
+                {skill.icon}
+              </span>
             )}
           </div>
-          <p className={`font-bold text-sm text-center bg-gradient-to-r ${skill.color || 'from-white to-purple-200'} bg-clip-text text-transparent transition-transform duration-300`}>
+          <p className={`font-bold text-sm text-center bg-gradient-to-r ${skill.color || 'from-white to-purple-200'} bg-clip-text text-transparent group-hover/skill:scale-110 transition-transform duration-300`}>
             {skill.name}
           </p>
           {showLevel && skill.level && (
             <div className="w-full mt-2">
               <div className="h-2 bg-white/10 rounded-full overflow-hidden relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent" style={{ animation: 'shimmer 3s infinite' }}></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover/skill:opacity-100" style={{ animation: 'shimmer 2s infinite' }}></div>
                 <div 
                   className={`h-full bg-gradient-to-r ${getLevelGradient(skill.level)} rounded-full transition-all duration-700 ease-out relative overflow-hidden`}
                   style={{
@@ -341,10 +291,10 @@ export default function Skills() {
                     transitionDelay: `${300 + index * 30}ms`
                   }}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent" style={{ animation: 'shimmer 2s infinite' }}></div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover/skill:opacity-100" style={{ animation: 'shimmer 1.5s infinite' }}></div>
                 </div>
               </div>
-              <p className={`font-bold text-xs text-center mt-1 bg-gradient-to-r ${getLevelGradient(skill.level)} bg-clip-text text-transparent`}>
+              <p className={`font-bold text-xs text-center mt-1 bg-gradient-to-r ${getLevelGradient(skill.level)} bg-clip-text text-transparent group-hover/skill:scale-105 transition-transform duration-300`}>
                 {skill.level}
               </p>
             </div>
@@ -362,13 +312,6 @@ export default function Skills() {
           25% { transform: translate(30px, -30px) rotate(90deg); }
           50% { transform: translate(-20px, 20px) rotate(180deg); }
           75% { transform: translate(40px, 10px) rotate(270deg); }
-        }
-        
-        @keyframes float-particle {
-          0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
-          10% { opacity: 0.3; }
-          90% { opacity: 0.3; }
-          50% { transform: translateY(-100vh) translateX(50px); }
         }
         
         @keyframes shimmer {
@@ -400,10 +343,6 @@ export default function Skills() {
           animation: float linear infinite;
         }
         
-        .animate-float-particle {
-          animation: float-particle linear infinite;
-        }
-        
         .animate-gradient-x {
           background-size: 200% 200%;
           animation: gradient-x 3s ease infinite;
@@ -411,15 +350,6 @@ export default function Skills() {
         
         .animate-pulse-width {
           animation: pulse-width 2s ease-in-out infinite;
-        }
-
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-        
-        .scrollbar-hide {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
         }
       `}</style>
 
@@ -478,14 +408,15 @@ export default function Skills() {
           <div className="relative">
             <div className="relative bg-white/5 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-white/10 shadow-xl overflow-hidden">
               {programmingLoading ? (
-                <ScrollingSectionSkeleton />
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                  {[...Array(10)].map((_, i) => (
+                    <SkillCardSkeleton key={i} />
+                  ))}
+                </div>
               ) : programmings.length > 0 ? (
-                <div 
-                  ref={scrollContainerRefs.programming}
-                  className="grid grid-rows-1 md:grid-rows-2 grid-flow-col auto-cols-[minmax(150px,1fr)] gap-6 overflow-x-auto scrollbar-hide"
-                >
-                  {[...programmings, ...programmings].map((skill, index) => (
-                    <SkillCard key={`${skill.name}-${index}`} skill={skill} index={index} showLevel={true} isVisible={sectionsVisible.programming} />
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                  {programmings.map((skill, index) => (
+                    <SkillCard key={skill.name} skill={skill} index={index} showLevel={true} isVisible={sectionsVisible.programming} />
                   ))}
                 </div>
               ) : (
@@ -511,14 +442,15 @@ export default function Skills() {
           <div className="relative">
             <div className="relative bg-white/5 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-white/10 shadow-xl overflow-hidden">
               {frameworkLoading ? (
-                <ScrollingSectionSkeleton />
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                  {[...Array(10)].map((_, i) => (
+                    <SkillCardSkeleton key={i} />
+                  ))}
+                </div>
               ) : frameworks.length > 0 ? (
-                <div 
-                  ref={scrollContainerRefs.frameworks}
-                  className="grid grid-rows-1 md:grid-rows-2 grid-flow-col auto-cols-[minmax(150px,1fr)] gap-6 overflow-x-auto scrollbar-hide"
-                >
-                  {[...frameworks, ...frameworks].map((skill, index) => (
-                    <SkillCard key={`${skill.name}-${index}`} skill={skill} index={index} showLevel={true} isVisible={sectionsVisible.frameworks} />
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                  {frameworks.map((skill, index) => (
+                    <SkillCard key={skill.name} skill={skill} index={index} showLevel={true} isVisible={sectionsVisible.frameworks} />
                   ))}
                 </div>
               ) : (
@@ -544,14 +476,15 @@ export default function Skills() {
           <div className="relative">
             <div className="relative bg-white/5 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-white/10 shadow-xl overflow-hidden">
               {hardwareLoading ? (
-                <ScrollingSectionSkeleton />
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                  {[...Array(10)].map((_, i) => (
+                    <SkillCardSkeleton key={i} />
+                  ))}
+                </div>
               ) : hardwares.length > 0 ? (
-                <div 
-                  ref={scrollContainerRefs.hardware}
-                  className="grid grid-rows-1 md:grid-rows-2 grid-flow-col auto-cols-[minmax(150px,1fr)] gap-6 overflow-x-auto scrollbar-hide"
-                >
-                  {[...hardwares, ...hardwares].map((skill, index) => (
-                    <SkillCard key={`${skill.name}-${index}`} skill={skill} index={index} showLevel={true} isVisible={sectionsVisible.hardware} />
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                  {hardwares.map((skill, index) => (
+                    <SkillCard key={skill.name} skill={skill} index={index} showLevel={true} isVisible={sectionsVisible.hardware} />
                   ))}
                 </div>
               ) : (
@@ -587,32 +520,35 @@ export default function Skills() {
                   {computers.map((item, index) => (
                     <div 
                       key={item.name} 
-                      className={`group/item relative transition-all duration-500 ${
+                      className={`group/item relative transition-all duration-500 hover:scale-105 hover:rotate-1 ${
                         sectionsVisible.concepts ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
                       }`}
                       style={{ transitionDelay: `${index * 50}ms` }}
                     >
-                      <div className={`absolute inset-0 bg-gradient-to-r ${getLevelGradient(item.level)} rounded-2xl blur-lg opacity-0 group-hover/item:opacity-20 transition-opacity`}></div>
-                      <div className="relative bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 group-hover/item:border-white/20 transition-all duration-300">
+                      <div className={`absolute inset-0 bg-gradient-to-r ${getLevelGradient(item.level)} rounded-2xl blur-xl opacity-0 group-hover/item:opacity-30 transition-all duration-300 group-hover/item:scale-110`}></div>
+                      <div className="relative bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 group-hover/item:border-white/30 group-hover/item:bg-white/10 group-hover/item:shadow-2xl transition-all duration-300">
                         <div className="flex justify-between items-center mb-4">
                           <div className="flex items-center gap-3">
-                            <span className="text-3xl">{item.icon}</span>
-                            <span className="font-bold text-lg bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
+                            <span className="text-3xl group-hover/item:scale-125 group-hover/item:rotate-12 transition-transform duration-300">{item.icon}</span>
+                            <span className="font-bold text-lg bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent group-hover/item:scale-105 transition-transform duration-300">
                               {item.name}
                             </span>
                           </div>
-                          <span className={`px-4 py-1.5 rounded-full text-xs font-bold bg-gradient-to-r ${getLevelGradient(item.level)} text-white shadow-lg`}>
+                          <span className={`px-4 py-1.5 rounded-full text-xs font-bold bg-gradient-to-r ${getLevelGradient(item.level)} text-white shadow-lg group-hover/item:scale-110 group-hover/item:shadow-xl transition-all duration-300`}>
                             {item.level}
                           </span>
                         </div>
-                        <div className="h-3 bg-white/10 rounded-full overflow-hidden">
+                        <div className="h-3 bg-white/10 rounded-full overflow-hidden relative">
+                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover/item:opacity-100" style={{ animation: 'shimmer 2s infinite' }}></div>
                           <div 
-                            className={`h-full bg-gradient-to-r ${getLevelGradient(item.level)} rounded-full transition-all duration-700 ease-out`}
+                            className={`h-full bg-gradient-to-r ${getLevelGradient(item.level)} rounded-full transition-all duration-700 ease-out relative overflow-hidden`}
                             style={{
                               width: sectionsVisible.concepts ? getLevelWidth(item.level) : '0%',
                               transitionDelay: `${300 + index * 50}ms`
                             }}
-                          ></div>
+                          >
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent" style={{ animation: 'shimmer 1.5s infinite' }}></div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -655,17 +591,17 @@ export default function Skills() {
                       }`}
                       style={{ transitionDelay: `${index * 50}ms` }}
                     >
-                      <div className={`absolute inset-0 bg-gradient-to-br ${skill.color} rounded-2xl blur-lg opacity-0 group-hover/soft:opacity-30 transition-all duration-300 group-hover/soft:scale-110`} style={{ animation: 'pulse-glow 3s ease-in-out infinite' }}></div>
+                      <div className={`absolute inset-0 bg-gradient-to-br ${skill.color} rounded-2xl blur-xl opacity-0 group-hover/soft:opacity-40 transition-all duration-300 group-hover/soft:scale-110`}></div>
                       
-                      <div className="relative bg-white/5 backdrop-blur-sm p-8 rounded-2xl border border-white/10 group-hover/soft:border-white/30 shadow-lg hover:shadow-2xl transition-all duration-300 h-full group-hover/soft:bg-white/10">
+                      <div className="relative bg-white/5 backdrop-blur-sm p-8 rounded-2xl border border-white/10 group-hover/soft:border-white/30 shadow-lg group-hover/soft:shadow-2xl transition-all duration-300 h-full group-hover/soft:bg-white/10">
                         <div className="flex flex-col items-center text-center gap-4">
                           <div className="relative">
-                            <div className={`absolute inset-0 bg-gradient-to-br ${skill.color} rounded-full blur-md opacity-20 group-hover/soft:opacity-40 transition-opacity duration-300`}></div>
-                            <div className="relative text-6xl group-hover/soft:scale-125 group-hover/soft:rotate-12 transition-transform duration-300" style={{ animation: 'bounce-subtle 3s ease-in-out infinite' }}>
+                            <div className={`absolute inset-0 bg-gradient-to-br ${skill.color} rounded-full blur-md opacity-20 group-hover/soft:opacity-50 transition-opacity duration-300`}></div>
+                            <div className="relative text-6xl group-hover/soft:scale-125 group-hover/soft:rotate-12 transition-transform duration-300">
                               {skill.icon}
                             </div>
                           </div>
-                          <h3 className={`text-2xl font-black bg-gradient-to-r ${skill.color} bg-clip-text text-transparent group-hover/soft:scale-105 transition-transform duration-300`}>
+                          <h3 className={`text-2xl font-black bg-gradient-to-r ${skill.color} bg-clip-text text-transparent group-hover/soft:scale-110 transition-transform duration-300`}>
                             {skill.name}
                           </h3>
                           <p className="text-white/70 text-sm leading-relaxed group-hover/soft:text-white/90 transition-colors duration-300">
