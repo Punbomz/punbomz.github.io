@@ -10,6 +10,7 @@ interface Project {
   color: string;
   achievements: string[];
   link: string;
+  year: string;
 }
 
 interface Experience {
@@ -20,6 +21,7 @@ interface Experience {
   icon: string;
   color: string;
   highlights: string[];
+  link: string;
 }
 
 interface Achievement {
@@ -244,24 +246,30 @@ export default function PortfolioClient() {
                         </div>
                         
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-start justify-between gap-3">
-                            <h3 className={`text-3xl md:text-4xl font-black mb-3 bg-gradient-to-r ${project.color} bg-clip-text text-transparent`}>
-                              {project.name}
-                            </h3>
-                            {project.link && (
-                            <a
-                              href={project.link.startsWith('http') ? project.link : `https://${project.link}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center text-slate-900 hover:scale-110 hover:rotate-12 transition-all duration-300 shadow-lg hover:shadow-yellow-500/50"
-                              title="View Project"
-                            >
-                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                                
-                              </svg>
-                            </a>
-                          )}
+                          <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-3 gap-2">
+                                <h3 className={`text-3xl md:text-4xl font-black bg-gradient-to-r ${project.color} bg-clip-text text-transparent`}>
+                                  {project.name}
+                                </h3>
+                            <div className="flex items-center gap-4">
+                              {project.year && (
+                                <span className={`px-4 py-1.5 bg-gradient-to-r ${project.color} rounded-full text-white text-sm font-bold shadow-lg flex-shrink-0 w-fit`}>
+                                  {project.year}
+                                </span>
+                              )}
+                              {project.link && (
+                                <a
+                                  href={project.link.startsWith('http') ? project.link : `https://${project.link}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center text-slate-900 hover:scale-110 hover:rotate-12 transition-all duration-300 shadow-lg hover:shadow-yellow-500/50"
+                                  title="View Project"
+                                >
+                                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                  </svg>
+                                </a>
+                              )}
+                            </div>
                           </div>
                           <p className="text-white/80 text-base md:text-lg mb-4 leading-relaxed">
                             {project.details}
@@ -359,9 +367,26 @@ export default function PortfolioClient() {
                                 <h3 className={`text-3xl md:text-4xl font-black bg-gradient-to-r ${experience.color} bg-clip-text text-transparent`}>
                                   {experience.title}
                                 </h3>
-                                <span className={`px-4 py-1.5 bg-gradient-to-r ${experience.color} rounded-full text-white text-sm font-bold shadow-lg flex-shrink-0 w-fit`}>
-                                  {experience.period}
-                                </span>
+                                <div className="flex items-center gap-4">
+                                  {experience.period && (
+                                    <span className={`px-4 py-1.5 bg-gradient-to-r ${experience.color} rounded-full text-white text-sm font-bold shadow-lg flex-shrink-0 w-fit`}>
+                                      {experience.period}
+                                    </span>
+                                  )}
+                                  {experience.link && (
+                                    <a
+                                      href={experience.link.startsWith('http') ? experience.link : `https://${experience.link}`}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center text-slate-900 hover:scale-110 hover:rotate-12 transition-all duration-300 shadow-lg hover:shadow-yellow-500/50"
+                                      title="View Experience"
+                                    >
+                                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                      </svg>
+                                    </a>
+                                  )}
+                                </div>
                               </div>
                               <p className="text-white text-xl font-bold mb-3">
                                 {experience.company}
@@ -408,9 +433,7 @@ export default function PortfolioClient() {
           
           <div className="relative group">
             <div className="absolute inset-0 bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 rounded-3xl blur-2xl opacity-20 transition-all duration-300"></div>
-            
-            <div className="relative bg-white/5 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-2xl">
-              <div className="max-h-[600px] overflow-y-auto pr-4 space-y-4 custom-scrollbar">
+              <div className="space-y-8">
                 {achievementsLoading ? (
                   <>
                     <LoadingSkeleton type="achievement" />
@@ -422,7 +445,7 @@ export default function PortfolioClient() {
                       key={achievement.name}
                       className="group/item relative"
                     >
-                      <div className="relative bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 transition-all duration-300 hover:bg-gradient-to-r hover:from-yellow-500/20 hover:to-orange-500/20 hover:border-yellow-400/40 hover:shadow-lg hover:shadow-yellow-500/20">
+                      <div className="relative hover:scale-[1.02] transition-all duration-300 bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 transition-all duration-300 hover:bg-gradient-to-r hover:from-yellow-500/20 hover:to-orange-500/20 hover:border-yellow-400/40 hover:shadow-lg hover:shadow-yellow-500/20">
                         <div className="flex items-start gap-6">
                           <div className="flex-shrink-0 flex flex-col items-center gap-2">
                             <div className="relative">
@@ -469,7 +492,6 @@ export default function PortfolioClient() {
                   </div>
                 )}
               </div>
-            </div>
           </div>
         </div>
 

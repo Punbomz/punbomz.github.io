@@ -1,11 +1,48 @@
 'use client';
 
+import { Download } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 export default function Home() {
   const [scrollY, setScrollY] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  const handleDownload = async () => {
+    setIsDownloading(true);
+    
+    try {
+      // Call your API endpoint to generate/fetch the PDF
+      const response = await fetch('/api/download-resume', {
+        method: 'GET',
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to download resume');
+      }
+      
+      // Get the blob from the response
+      const blob = await response.blob();
+      
+      // Create a download link
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'resume.pdf'; // You can customize the filename
+      document.body.appendChild(a);
+      a.click();
+      
+      // Cleanup
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error('Error downloading resume:', error);
+      alert('Failed to download resume. Please try again.');
+    } finally {
+      setIsDownloading(false);
+    }
+  };
 
   useEffect(() => {
     setIsVisible(true);
@@ -189,9 +226,67 @@ export default function Home() {
           </div>
         </div>
 
+        {/* Download Resume Button */}
+        <div className="flex justify-center mt-8">
+          <button
+            onClick={handleDownload}
+            disabled={isDownloading}
+            className="group/download relative overflow-hidden hover:cursor-pointer hover:scale-105 transition-transform duration-300 hover:shadow-2xl hover:shadow-purple-500/50"
+          >
+            {/* Button content */}
+            <div className="relative bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 rounded-2xl px-6 py-4 flex items-center gap-3 shadow-xl">
+              {isDownloading ? (
+                <>
+                  <svg 
+                    className="w-5 h-5 text-slate-900 animate-spin" 
+                    fill="none" 
+                    viewBox="0 0 24 24"
+                  >
+                    <circle 
+                      className="opacity-25" 
+                      cx="12" 
+                      cy="12" 
+                      r="10" 
+                      stroke="currentColor" 
+                      strokeWidth="4"
+                    ></circle>
+                    <path 
+                      className="opacity-75" 
+                      fill="currentColor" 
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  <span className="text-slate-900 font-bold text-lg">
+                    Downloading...
+                  </span>
+                </>
+              ) : (
+                <>
+                  <svg 
+                    className="w-5 h-5 text-slate-900 group-hover/download:text-white group-hover/download:animate-bounce transition-colors duration-300 text-lg" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round" 
+                      strokeWidth={2.5} 
+                      d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" 
+                    />
+                  </svg>
+                  <span className="text-slate-900 font-bold group-hover/download:text-white transition-colors duration-300 text-lg">
+                    Download Resume
+                  </span>
+                </>
+              )}
+            </div>
+          </button>
+        </div>
+
         {/* Social Icons with enhanced design */}
         <div 
-          className={`flex gap-6 mt-16 transition-all duration-1000 delay-1200 mb-10 ${
+          className={`flex gap-6 mt-8 transition-all duration-1000 delay-1200 mb-10 ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}
         >

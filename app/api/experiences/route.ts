@@ -1,3 +1,4 @@
+import { link } from 'fs';
 import { NextResponse } from 'next/server';
 
 async function fetchNotionDatabase(databaseId: string) {
@@ -25,6 +26,7 @@ function parseExperiences(notionData: any[]) {
     details: item.properties.Details?.rich_text?.[0]?.plain_text || '',
     icon: item.properties.Icon?.rich_text?.[0]?.plain_text || '💼',
     color: item.properties.Color?.select?.name || 'from-cyan-400 to-blue-500',
+    link: item.properties.Link?.url || '',
     highlights: item.properties.Highlights?.rich_text?.[0]?.plain_text
       ? item.properties.Highlights.rich_text[0].plain_text.split(',').map((h: string) => h.trim())
       : []
