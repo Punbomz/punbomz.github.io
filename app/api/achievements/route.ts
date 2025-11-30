@@ -36,7 +36,13 @@ export async function GET() {
     const data = await fetchNotionDatabase(process.env.NOTION_ACHIEVEMENTS_DB);
     const achievements = parseAchievements(data);
     
-    return NextResponse.json(achievements);
+    const sortedAchievements = achievements.sort((a, b) => {
+      if (!a.year) return 1;  // Move items without year to the end
+      if (!b.year) return -1;
+      return b.year - a.year; // Descending order
+    });
+    
+    return NextResponse.json(sortedAchievements);
   } catch (error) {
     console.error('Error fetching achievements:', error);
     return NextResponse.json([]);

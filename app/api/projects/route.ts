@@ -43,7 +43,14 @@ export async function GET() {
     const data = await fetchNotionDatabase(process.env.NOTION_PROJECTS_DB);
     const projects = parseProjects(data);
     
-    return NextResponse.json(projects);
+    // Sort by Year in descending order (newest first)
+    const sortedProjects = projects.sort((a, b) => {
+      if (!a.year) return 1;  // Move items without year to the end
+      if (!b.year) return -1;
+      return b.year - a.year; // Descending order
+    });
+    
+    return NextResponse.json(sortedProjects);
   } catch (error) {
     console.error('Error fetching projects:', error);
     return NextResponse.json([]);
